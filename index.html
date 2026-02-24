@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 NFL Draft Big Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1621;--card:#182533;--border:#1e2c3a;--accent:#5ea5d6;--text:#f5f5f5;--muted:#708499;--hover:#1d2f40;--green:#4caf50;--red:#ef5350;--yellow:#ffc107;--orange:#ff9800}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.header{background:linear-gradient(135deg,#0f1923 0%,#162230 100%);border-bottom:1px solid var(--border);padding:20px 30px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header-left{display:flex;align-items:center;gap:16px}
+.back-link{color:var(--muted);font-size:13px;display:flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid var(--border);border-radius:6px;transition:.2s}
+.back-link:hover{color:var(--accent);border-color:var(--accent);text-decoration:none}
+.header h1{font-size:24px;font-weight:800;letter-spacing:-0.5px}
+.header h1 span{color:var(--accent)}
+.header-sub{color:var(--muted);font-size:13px;font-weight:400}
+.combine-badge{background:linear-gradient(135deg,#1a3a2a,#1a2a1a);border:1px solid #2a5a3a;padding:8px 16px;border-radius:8px;font-size:12px;color:#4caf50;font-weight:500}
+
+.controls{padding:16px 30px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;border-bottom:1px solid var(--border);background:rgba(14,22,33,.6)}
+.search-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;width:220px;outline:none;transition:.2s}
+.search-box:focus{border-color:var(--accent)}
+.search-box::placeholder{color:var(--muted)}
+.tab-group{display:flex;background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.tab-btn{padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);border:none;font-family:'Inter',sans-serif;transition:.2s;letter-spacing:.5px}
+.tab-btn.active{background:var(--accent);color:#fff}
+.pill-group{display:flex;flex-wrap:wrap;gap:6px}
+.pill{padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:20px;font-family:'Inter',sans-serif;transition:.2s;letter-spacing:.5px}
+.pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pill:hover:not(.active){border-color:var(--accent);color:var(--accent)}
+
+.main-content{display:flex;height:calc(100vh - 145px);overflow:hidden}
+.board{flex:1;overflow-y:auto;padding:0}
+.board.shrunk{margin-right:0}
+
+table{width:100%;border-collapse:collapse}
+thead{position:sticky;top:0;z-index:10}
+thead th{background:#131d29;padding:10px 12px;font-size:11px;font-weight:600;color:var(--muted);text-align:left;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid var(--border);white-space:nowrap;user-select:none;transition:.2s}
+thead th:hover{color:var(--accent)}
+thead th.sorted-asc::after{content:' ▲';color:var(--accent)}
+thead th.sorted-desc::after{content:' ▼';color:var(--accent)}
+tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+tbody tr:hover{background:var(--hover)}
+tbody tr.active-row{background:#1a3350;border-left:3px solid var(--accent)}
+td{padding:10px 12px;font-size:13px;vertical-align:middle}
+.rank-cell{font-weight:800;font-size:16px;color:var(--accent);width:50px;text-align:center}
+.rank-cell.top5{color:var(--yellow)}
+.school-logo{width:32px;height:32px;border-radius:50%;object-fit:contain;background:var(--bg);padding:2px}
+.school-logo-fallback{width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.player-info{display:flex;align-items:center;gap:10px;min-width:200px}
+.player-details{display:flex;flex-direction:column;gap:1px}
+.player-name{font-weight:600;font-size:14px}
+.player-meta{font-size:11px;color:var(--muted)}
+.pos-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;margin-right:4px}
+.pos-QB{background:#2a1a3a;color:#b388ff}.pos-RB{background:#1a3a2a;color:#69f0ae}.pos-WR{background:#3a2a1a;color:#ffab40}
+.pos-TE{background:#1a2a3a;color:#40c4ff}.pos-OT,.pos-IOL{background:#2a2a1a;color:#ffd740}
+.pos-DL{background:#3a1a1a;color:#ff5252}.pos-EDGE{background:#3a1a2a;color:#ff4081}
+.pos-LB{background:#1a3a3a;color:#64ffda}.pos-CB{background:#1a1a3a;color:#8c9eff}.pos-S{background:#2a1a2a;color:#ea80fc}
+.measurables{white-space:nowrap;color:var(--muted);font-size:12px}
+.stat-cell{font-size:13px;font-variant-numeric:tabular-nums;text-align:right;min-width:55px}
+.stat-cell.highlight{color:var(--accent);font-weight:600}
+.stat-label{display:none;font-size:9px;color:var(--muted);text-transform:uppercase}
+
+/* Detail Panel */
+.detail-panel{width:0;overflow:hidden;transition:width .3s ease,opacity .2s;background:linear-gradient(180deg,#131d29 0%,var(--bg) 100%);border-left:1px solid var(--border);opacity:0;flex-shrink:0}
+.detail-panel.open{width:480px;opacity:1;overflow-y:auto}
+.detail-panel.fullscreen{position:fixed!important;top:0;left:0;width:100%!important;height:100vh;z-index:200;border-left:none}
+.detail-inner{padding:24px;min-width:480px;font-size:var(--detail-font,14px)}
+.detail-panel.fullscreen .detail-inner{max-width:800px;margin:0 auto;min-width:auto}
+.detail-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px}
+.detail-toolbar-left{display:flex;align-items:center;gap:12px}
+.detail-toolbar-right{display:flex;align-items:center;gap:10px}
+.detail-close{display:flex;align-items:center;gap:6px;color:var(--muted);cursor:pointer;font-size:13px;transition:.2s}
+.detail-close:hover{color:var(--accent)}
+.detail-btn{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--muted);cursor:pointer;font-size:12px;transition:.2s;display:flex;align-items:center;gap:4px}
+.detail-btn:hover{border-color:var(--accent);color:var(--accent)}
+.detail-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(94,165,214,.1)}
+.font-slider{display:flex;align-items:center;gap:0;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 8px}
+.font-slider button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;font-weight:700;width:28px;height:28px;display:flex;align-items:center;justify-content:center;transition:.2s}
+.font-slider button:hover{color:var(--accent)}
+.font-dots{display:flex;align-items:center;gap:4px;padding:0 6px}
+.font-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:.35;transition:all .2s;cursor:pointer}
+.font-dot.active{opacity:1;transform:scale(1.5)}
+.detail-header{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.detail-logo{width:56px;height:56px;border-radius:50%;object-fit:contain;background:var(--card);padding:4px}
+.detail-logo-fallback{width:56px;height:56px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff}
+.detail-name{font-size:22px;font-weight:800;letter-spacing:-0.3px}
+.detail-pos{font-size:14px;color:var(--muted)}
+.detail-measurables{display:flex;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+.detail-meas-item{text-align:center}
+.detail-meas-val{font-size:18px;font-weight:700}
+.detail-meas-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+.detail-section{margin-bottom:24px}
+.detail-section h3{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.stat-box-val{font-size:20px;font-weight:700;color:var(--accent)}
+.stat-box-label{font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.scouting-notes{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:var(--detail-font,14px);color:var(--muted);line-height:1.6;font-style:italic}
+.yt-link{display:flex;align-items:center;gap:8px;background:#1a1a2a;border:1px solid #2a2a4a;border-radius:8px;padding:12px;color:#ff4444;font-size:13px;font-weight:500;transition:.2s}
+.yt-link:hover{background:#2a1a2a;text-decoration:none;border-color:#ff4444}
+.source-links{display:flex;flex-direction:column;gap:6px}
+.source-link{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;font-size:12px;transition:.2s}
+.source-link:hover{border-color:var(--accent);text-decoration:none}
+
+.school-group-header{padding:12px 16px;background:#131d29;font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.3px;border-bottom:1px solid var(--border);position:sticky;top:38px;z-index:5}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+
+@media(max-width:900px){
+  .detail-panel.open{width:100%;position:fixed;top:0;left:0;z-index:100;height:100vh}
+  .detail-inner{min-width:auto}
+  .header{padding:12px 16px}
+  .controls{padding:10px 16px}
+  .search-box{width:100%}
+  td{padding:8px 6px;font-size:12px}
+  .player-name{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="../mission-control/" class="back-link">← Mission Control</a>
+    <div>
+      <h1>🏈 2026 NFL Draft <span>Big Board</span></h1>
+      <div class="header-sub">Player Rankings • Top 40 Prospects</div>
+    </div>
+  </div>
+  <div class="combine-badge">📅 NFL Combine: Feb 27 – Mar 2, 2026 — Results coming soon</div>
+</div>
+
+<div class="controls">
+  <input type="text" class="search-box" id="searchBox" placeholder="Search player or school...">
+  <div class="tab-group">
+    <button class="tab-btn active" data-view="rank">OVERALL RANK</button>
+    <button class="tab-btn" data-view="school">BY SCHOOL</button>
+  </div>
+  <div class="pill-group" id="posFilters">
+    <button class="pill active" data-pos="ALL">ALL</button>
+    <button class="pill" data-pos="QB">QB</button>
+    <button class="pill" data-pos="RB">RB</button>
+    <button class="pill" data-pos="WR">WR</button>
+    <button class="pill" data-pos="TE">TE</button>
+    <button class="pill" data-pos="OT">OT</button>
+    <button class="pill" data-pos="IOL">IOL</button>
+    <button class="pill" data-pos="DL">DL</button>
+    <button class="pill" data-pos="EDGE">EDGE</button>
+    <button class="pill" data-pos="LB">LB</button>
+    <button class="pill" data-pos="CB">CB</button>
+    <button class="pill" data-pos="S">S</button>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="board" id="board"></div>
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-inner" id="detailInner"></div>
+  </div>
+</div>
+
+<script>
+const profiles={"Arvell Reese":{ringerRank:3,nflComp:"Jihaad Campbell",age:"20.6",class:"Junior",tagline:"Springy, super-versatile playmaker who makes big-impact plays both on the edge and off the ball.",traits:["Pass-Rush Talent","Infinite Upside","Instinctual Playmaking","Rare Versatility"],strengths:"Reese is one of the most exciting players in this draft, a souped-up and multitalented defender who splits his time between off-ball linebacker and edge rusher. He has explosive burst and good playmaking instincts, and at just 20 years old on draft night, he brings incredible upside at the next level. When playing off the ball, Reese is an aggressive and physical tackler, showing good hustle to support the run and chase down plays from the backside. He's got great range and displays incredible closing speed when tracking down the opposition in space, and he chops his feet to avoid overrunning the ballcarrier. He gets under the pads of blockers and stacks them onto their heels, shedding blocks to avoid being controlled at the point of attack. He has good vision and awareness to fit through gaps and find the ball, and he boasts a wide tackle radius, using his long arms to wrap up and corral the ballcarrier. When playing on the edge, he is comfortable rushing from a two-point stance, showing an explosive first step to threaten offenses vertically. He's a flexible athlete who can bend and get low to duck under and beat blocks. He sets the edge in the run game. He's a fluid mover who is comfortable dropping back into zones, and he's excellent on delayed blitzes, where his acceleration and closing speed show up.",weaknesses:"Reese may need to add some bulk to his frame at the next level, especially if he ends up playing primarily at edge rusher. He lacks sand in his pants and will need to get stronger to take blocks head-on. He can get sealed out of a play by bigger, stronger linemen. He still needs to develop a wider repertoire of pass rush moves; he is relatively inexperienced on the edge and relies more on his speed and burst than real technical prowess. When playing off the ball, he flashes coverage chops, but there are times when he loses a step or finds himself out of position when defending the pass. He has incredible potential at two positions but could also be looked at as a tweener; he would benefit from landing with a coaching staff that has a clear plan for his role.",background:"A junior and former four-star recruit out of Cleveland, Ohio. Was the no. 22 linebacker in the 2023 class and the no. 213 player overall. Played in 22 games over his first two seasons before becoming a full-time starter in 2025, when he was named first-team All-Big Ten and a consensus first-team All-American.",funFacts:["Describes his game as 'see ball, get ball'","Went to the same high school as Ohio State legends Troy Smith, Ted Ginn Jr., Marshon Lattimore, and Cardale Jones","Started clothing and landscaping side hustles with his brother in high school to make extra money","Was practicing with DEs at Ohio State, but linebackers coach James Laurinaitis pushed for him to return to LB: 'I was just a voice that he is too natural and moves too well at the second level to put him at just a rush end... There's too much ability there.'"],bruglerRank:1,bruglerNote:"Reese was the No. 1 prospect on my midseason top 50, and nothing has changed at the top. An impressive height/weight/speed athlete, Reese (one of the youngest prospects in the draft class) was asked by Ohio State to play a blend of multiple positions, which showcased his vast tools for NFL scouts. He is explosive from his spot with exceptional closing burst to cover ground in a blink. He falls somewhere between Micah Parsons and Jalon Walker in terms of his pro projection.",scoutReport:"Whether he is spying, blitzing, dropping or mirroring the run, Reese's impact shows up on every drive of every game, which is why he has been Dane Brugler's favorite prospect to study in 2025. Some linebackers possess length and power, while others have agility and closing speed. Few have it all in one package, like Reese.\n\nAs an off-ball linebacker, Reese plays a position that isn't typically drafted super high. Still, his versatility to do just about anything you want in the front seven increases his value. With his talent and upside, Reese should land somewhere in the top half of Round 1.",source:"Dane Brugler, The Athletic (Feb 2026 Top 50 + Oct 2025) · The Ringer / Danny Kelly (Jan 2026)"},"Caleb Downs":{ringerRank:2,nflComp:"Minkah Fitzpatrick",tagline:"The complete modern safety — elite play recognition, closing speed, and the versatility to play anywhere on the field.",traits:["Elite Play Recognition","Safety Versatility","Closing Speed","Coverage Intelligence"],strengths:"Terrific play recognition — rarely fooled by screens or play action. Exceptional positional versatility across the secondary. Passes off routes and picks them up on time in zone coverage; constant communication with teammates. Recognizes passing concepts and sometimes breaks on a route before the receiver does. Impressive closing speed. Can handle multiple routes in his zone simultaneously. Sticky and physical in man coverage. Exceptional awareness — consistently positions himself between receiver and QB without getting beaten over the top. Can play near the line of scrimmage against both the run and pass. Fluid hips. Takes on blocks with strength. Has experience as a punt returner.",weaknesses:"Needs to be more comfortable backpedaling in coverage as a single deep safety. Has a habit of going for the big hit with his shoulder instead of wrapping up with his arms. Can take bad angles to the ball carrier. Loves to read the quarterback, but sometimes gets caught with eyes in the backfield too long. Not afraid to gamble for interceptions but can get burned if he misses. Could disengage from blocks quicker.",background:"Born December 10, 2004 in Hoschton, GA. Attended Mill Creek High School. Considered the nation's top safety prospect — ranked top-10 nationally by Rivals and 247Sports. Committed to Alabama over Ohio State, Clemson, Georgia, and Notre Dame. Spent 2023 season at Alabama, where he led the SEC with 70 solo tackles. Transferred to Ohio State after Nick Saban's retirement. Career: 257 combined tackles, 16 TFL, 1.5 sacks, 6 INT, 12 passes defended, 3 forced fumbles. Also had 10 career punt returns for 185 yards and two return TDs.",funFacts:["Led the SEC with 70 solo tackles in 2023 as a true freshman","Two punt return touchdowns in his college career","Won the National Championship with Ohio State in 2024 season","Won the 2025 Jim Thorpe Award (best defensive back), Ronnie Lott Trophy, and Big Ten Defensive Player of the Year"],scoutReport:"Caleb Downs has a legitimate argument to be the best overall player in the 2026 draft class. He does everything you want a modern safety to do. Downs understands the game of football extremely well and doesn't panic under pressure. His ability to recognize things before they develop — whether screens, play action, or route combinations — is a rare trait. His closing speed allows him to make big plays on the ball, and his positional versatility makes him a nightmare for offensive coordinators to game-plan against.",source:"Steelers Depot scouting report (Feb 2026)"},"Fernando Mendoza":{ringerRank:1,nflComp:"Flacco on the field, Russ on the mic",tagline:"The nation's best QB — a Heisman winner and national champion with elite football IQ, precision arm talent, and championship pedigree.",traits:["Elite Football IQ","Precision Passer","Pocket Poise","National Champion"],strengths:"High football IQ and quick post-snap processing — reads coverages well, identifies vulnerabilities, and exploits them efficiently. Good arm talent with the ability to toggle between velocity and touch; excels at layering the football over the defense and dropping it into the bucket. Can drive the ball past linebackers with good velocity against both zone and man coverage. Skilled at back-shoulder fades and far-hash sideline throws. Good sense of pressure in the pocket, navigates well to find answers against defensive pressure, and makes accurate throws with free runners in his face. Functional straight-line athlete who can pick up first downs with his legs. Tough inside the pocket — doesn't shy away from standing firm against zero-pressure looks.",weaknesses:"Not a designed running QB — shouldn't be asked to run keeper or zone-read concepts where he can be chased down by second-level defenders. Eye manipulation post-snap needs further development to move defenders out of throwing windows. Developing answers at the line of scrimmage against simulated pressure looks.",background:"Started college career at Cal as a 3-star recruit in the 2022 class. Father is a college football coach who played QB at North Carolina Central and coached there from 2014-18. Transferred to Indiana and took the college football world by storm in 2025. Went undefeated, winning the Big Ten Championship, the Heisman Trophy, and the National Championship. Final line: 3,535 passing yards, 41 TDs, 6 INTs, 70.9% completion rate. Also rushed for 276 yards and 7 scores on the ground in 16 games.",funFacts:["Won the 2025 Heisman Trophy","Led Indiana to the 2025 National Championship — the program's first ever","His father coached and played QB at North Carolina Central University","Went undefeated in 2025 — the only QB to do so among major-conference starters"],scoutReport:"Mendoza is the top QB in the 2026 draft class and the heavy favorite to go No. 1 overall. He finished 2025 undefeated, winning the Big Ten, the Heisman, and a National Championship. His football IQ, ball placement, and decision-making are top-class, making him worthy of a first-round selection as an early-impact starter per PFF. ESPN calls him the top quarterback in the 2026 class. Bleacher Report compared his grade to Matt Ryan with mobility.",source:"Bleacher Report / Damian Parson (Oct 2025) · ESPN · PFF"},"David Bailey":{ringerRank:5,nflComp:"Chop Robinson",tagline:"Quick-twitch pass rusher with a deep and diverse bag of moves — an explosive speed-to-power athlete who can win from any technique.",traits:["Elite Pass Rush","Quick-Twitch Athlete","Deep Move Repertoire","Transfer Portal Breakout"],strengths:"Impressive athlete who is quick-twitch and has very smooth and easy change of direction skills to beat offensive linemen across their faces. Good acceleration off the line of scrimmage to win around the edge with speed. Uses his hands well as a pass rusher — quick and active to defeat blockers. Has shown several pass-rush moves: hand swipe, rip, ghost rush, inside spin and long-arm. Good bend to the corner at the top of the rush. Very agile and effective as a looper in line games, able to gain ground vertically while moving laterally.",weaknesses:"Slightly undersized to be a full-time edge defender in the NFL — may measure closer to 238-240 pounds. Lacks the strength to be an effective run defender; struggles to get extension on blocks and has a lean lower half that makes setting the edge against offensive linemen difficult. Not very physical at the point of attack. Has a habit of working around blocks even against tight ends, often vacating his gap. Doesn't have the mass to effectively turn speed to power against elite competition.",background:"Four-star recruit in the 2022 class out of Charlotte, NC. Went to Stanford and was an immediate starter, earning true freshman All-American honors by 247Sports with 46 tackles, 8.5 TFLs, and 2.5 sacks. Racked up 34 tackles and 5 sacks in 2023. Then 31 tackles and 7 sacks as a junior before transferring to Texas Tech in 2024, where he posted 13.5 sacks against Big 12 competition.",funFacts:["Named true freshman All-American by 247Sports in 2022","Recorded 13.5 sacks in 2024 against Big 12 competition after transferring to Texas Tech","B/R Scouting ranked him 8th overall and EDGE2 in the 2026 draft class","BR comparable grade to Dallas Turner (Alabama) and Laiatu Latu (UCLA)"],scoutReport:"Bailey is an impressive athlete with a deep bag of pass-rush moves to be a significant contributor on third downs in the NFL. His quick-twitch movement skills and good bend allow him to consistently threaten the edge. He has good hands and the athleticism to work inside counters. The concern at the NFL level is his size and run-defense capability, but as a designated pass rusher, his upside is significant. Bleacher Report compared him to Jaelan Phillips.",source:"Bleacher Report / Matt Holder (Oct 2025)"},"Rueben Bain Jr.":{ringerRank:6,nflComp:"Kwity Paye",tagline:"Elite pass-rusher with an NFL-ready frame, explosive burst, and a diverse bag of moves to be a dominant force on the edge.",traits:["Pass-Rush Specialist","Physical at POA","Bull Rush Power","Speed-to-Power Convert"],strengths:"Good size with an NFL-ready body and a thick lower half — doesn't carry much bad weight. Good quickness for his size with impressive movement skills. Strong and physical at the point of attack to gain control of the block and set the edge against offensive tackles. Solid at holding ground against combo blocks. Has shown the ability to shed blocks and make tackles near the line of scrimmage. Can collapse the pocket when bull rushing, with impressive change-of-direction skills turning speed to power. Flashed decent rip and cross-chop moves as secondary options. Good bend at the top of the rush to take efficient paths to the quarterback.",weaknesses:"Lacks some explosion off the line to consistently win with pure speed around the edge at the NFL level. Timing and consistency with his hands when rushing the passer is a work in progress — often late and doesn't play the hands well after contact. Not always gap disciplined against the run; has a habit of leaving his assignment early and can get burned by backs who set defenders up on zone runs.",background:"Four-star recruit in the 2023 class out of Miami, FL. Earned ACC Defensive Rookie of the Year, third-team All-ACC, and freshman All-American honors with 44 total tackles, 13 TFLs and 7.5 sacks as a freshman. Suffered a calf injury in 2024 that caused him to miss four games. Bounced back strong for a dominant 2025 campaign. Career: 121 tackles, 20.5 sacks, 1 INT.",funFacts:["Recorded 77 career sacks in high school — averaging 19.25 per season","Four-time state champion in high school","Won the 2022 Nat Moore Trophy as South Florida's top high school player","Named ACC Defensive Rookie of the Year as a true freshman at Miami"],scoutReport:"Bain has the skill set to be the top player at his position and a top-five pick in the 2026 NFL draft. He is a strong and physical edge defender who can gain control at the point of attack and set the edge against offensive tackles. He has impressive change-of-direction skills and the athleticism to be an effective looper in line games. His bull rush can collapse the pocket, and he flashes decent rip and cross-chop moves as secondary options. He needs to develop more consistency in his hands as a pass rusher, but the raw tools are first-round caliber.",source:"Bleacher Report / Matt Holder (Oct 2025)"},"Francis Mauigoa":{ringerRank:7,nflComp:"Darnell Wright",scoutReport:"",source:""},"Carnell Tate":{ringerRank:4,nflComp:"Tony Hawk's Pro Skater",scoutReport:"",source:""},"Jeremiyah Love":{ringerRank:8,nflComp:"Travis Etienne Jr.",scoutReport:"",source:""},"Makai Lemon":{ringerRank:9,nflComp:"Doug Baldwin",scoutReport:"",source:""},"Mansoor Delane":{ringerRank:10,nflComp:"Kamari Lassiter",scoutReport:"With short arms and average speed by NFL standards, Delane won't be loved by everyone, especially those teams that would rather bet on high-upside athletes at the position. What separates him is his coverage intelligence (in both man and zone) and competitive temperament, which makes it challenging to target him. Delane has allowed just six receptions on 20 targets early in the 2025 season. A riser Brugler has been talking about since the season kicked off.",source:"Dane Brugler, The Athletic (Oct 2025)"},"Spencer Fano":{ringerRank:11,nflComp:"Spencer Brown",scoutReport:"",source:""},"Vega Ioane":{ringerRank:12,nflComp:"Steve Avila",scoutReport:"A fourth-year junior, Ioane had a third-round grade over the summer, and that projection has only improved. He was stout and alert in pass protection against Oregon, and he put reps on tape that show him mauling in the run game and pulling near the goal line. Ioane projects as an NFL starter and has put himself in the mix to be the first guard drafted.",source:"Dane Brugler, The Athletic (Oct 2025)"},"Avieon Terrell":{ringerRank:13,nflComp:"Like if A.J. Terrell had a little brother",scoutReport:"",source:""},"Keldric Faulk":{ringerRank:14,nflComp:"Travon Walker",scoutReport:"",source:""},"Peter Woods":{ringerRank:16,nflComp:"Shai-Hulud",scoutReport:"",source:""},"Jordyn Tyson":{ringerRank:17,nflComp:"Christian Watson",scoutReport:"",source:""},"KC Concepcion":{ringerRank:18,nflComp:"Khalil Shakir",scoutReport:"",source:""},"Denzel Boston":{ringerRank:19,nflComp:"Courtland Sutton",scoutReport:"",source:""},"Kenyon Sadiq":{ringerRank:20,nflComp:"Sam LaPorta",scoutReport:"",source:""},"Emmanuel McNeil-Warren":{ringerRank:0,nflComp:"",scoutReport:"McNeil-Warren (6-3 1/2, 210) has rare size for a backend defender, with quality athleticism and ball skills to make plays. Primarily asked to line up in the boundary, he will also handle man-to-man duties in the nickel and play some free safety. His coaches say he improves daily as his football IQ continues to develop. Entered the season with a third-round grade but continues to move up.",source:"Dane Brugler, The Athletic (Oct 2025)"},"Sonny Styles":{ringerRank:23,nflComp:"Devin Lloyd",scoutReport:"",source:""},"Jermod McCoy":{ringerRank:24,nflComp:"Eric Stokes",scoutReport:"",source:""},"Kadyn Proctor":{ringerRank:25,nflComp:"Orlando Brown Jr.",scoutReport:"",source:""},"CJ Allen":{ringerRank:31,nflComp:"Devin White",scoutReport:"",source:""},"Akheem Mesidor":{ringerRank:15,nflComp:"Jim Carrey in 'The Cable Guy'",scoutReport:"",source:""},"Cashius Howell":{ringerRank:22,nflComp:"Byron Young",scoutReport:"",source:""},"T.J. Parker":{ringerRank:21,nflComp:"Jermaine Johnson",scoutReport:"",source:""},"Kayden McDonald":{ringerRank:26,nflComp:"An event horizon",scoutReport:"",source:""},"Brandon Cisse":{ringerRank:30,nflComp:"Jaylon Johnson",scoutReport:"",source:""},"Colton Hood":{ringerRank:32,nflComp:"Marlon Humphrey",scoutReport:"",source:""}};
+const prospects=[{rank:1,name:"Arvell Reese",pos:"LB",school:"Ohio State",height:'6\'4"',weight:240,stats:{tackles:69,sacks:6.5,passDef:2,int:0,ff:0},conf:"Big Ten"},{rank:2,name:"Rueben Bain Jr.",pos:"EDGE",school:"Miami",height:'6\'3"',weight:275,stats:{tackles:54,sacks:9.5,passDef:1,int:1,ff:1},conf:"ACC"},{rank:3,name:"Caleb Downs",pos:"S",school:"Ohio State",height:'6\'0"',weight:205,stats:{tackles:68,sacks:1.0,passDef:2,int:2,ff:2},conf:"Big Ten"},{rank:4,name:"Fernando Mendoza",pos:"QB",school:"Indiana",height:'6\'5"',weight:225,stats:{passYds:3535,td:41,int:6,pct:72.0,rating:182.9},conf:"Big Ten"},{rank:5,name:"David Bailey",pos:"EDGE",school:"Texas Tech",height:'6\'3"',weight:250,stats:{tackles:52,sacks:14.5,passDef:3,int:0,ff:3},conf:"Big 12"},{rank:6,name:"Francis Mauigoa",pos:"OT",school:"Miami",height:'6\'6"',weight:335,stats:{games:16},conf:"ACC"},{rank:7,name:"Carnell Tate",pos:"WR",school:"Ohio State",height:'6\'3"',weight:191,stats:{rec:51,recYds:875,td:9,avg:17.2,rushYds:16},conf:"Big Ten"},{rank:8,name:"Spencer Fano",pos:"OT",school:"Utah",height:'6\'6"',weight:302,stats:{games:12},conf:"Pac-12"},{rank:9,name:"Jeremiyah Love",pos:"RB",school:"Notre Dame",height:'6\'0"',weight:214,stats:{rushYds:1372,td:18,avg:6.9,recYds:280,recTD:3},conf:"Independent"},{rank:10,name:"Jordyn Tyson",pos:"WR",school:"Arizona State",height:'6\'2"',weight:195,stats:{rec:61,recYds:711,td:8,avg:11.7,rushYds:4},conf:"Big 12"},{rank:11,name:"Mansoor Delane",pos:"CB",school:"LSU",height:'6\'1"',weight:187,stats:{tackles:45,sacks:0.0,passDef:11,int:2,ff:0},conf:"SEC"},{rank:12,name:"Makai Lemon",pos:"WR",school:"USC",height:'5\'11"',weight:195,stats:{rec:79,recYds:1156,td:11,avg:14.6,rushYds:4},conf:"Big Ten"},{rank:13,name:"Sonny Styles",pos:"LB",school:"Ohio State",height:'6\'4"',weight:235,stats:{tackles:82,sacks:1.0,passDef:3,int:1,ff:1},conf:"Big Ten"},{rank:14,name:"Jermod McCoy",pos:"CB",school:"Tennessee",height:'6\'0"',weight:193,stats:{tackles:44,sacks:0.0,passDef:9,int:4,ff:0},conf:"SEC"},{rank:15,name:"Keldric Faulk",pos:"EDGE",school:"Auburn",height:'6\'6"',weight:270,stats:{tackles:29,sacks:2.0,passDef:4,int:0,ff:0},conf:"SEC"},{rank:16,name:"Peter Woods",pos:"DL",school:"Clemson",height:'6\'3"',weight:315,stats:{tackles:30,sacks:2.0,passDef:1,int:0,ff:0},conf:"ACC"},{rank:17,name:"Kenyon Sadiq",pos:"TE",school:"Oregon",height:'6\'3"',weight:245,stats:{rec:51,recYds:560,td:8,avg:11.0,rushYds:6},conf:"Big Ten"},{rank:18,name:"Vega Ioane",pos:"IOL",school:"Penn State",height:'6\'4"',weight:328,stats:{games:11},conf:"Big Ten"},{rank:19,name:"Denzel Boston",pos:"WR",school:"Washington",height:'6\'4"',weight:210,stats:{rec:62,recYds:881,td:11,avg:14.2,rushYds:0},conf:"Big Ten"},{rank:20,name:"Cashius Howell",pos:"EDGE",school:"Texas A&M",height:'6\'2"',weight:248,stats:{tackles:31,sacks:11.5,passDef:6,int:0,ff:1},conf:"SEC"},{rank:21,name:"Avieon Terrell",pos:"CB",school:"Clemson",height:'5\'11"',weight:180,stats:{tackles:48,sacks:3.0,passDef:9,int:0,ff:5},conf:"ACC"},{rank:22,name:"Kadyn Proctor",pos:"OT",school:"Alabama",height:'6\'7"',weight:366,stats:{games:15},conf:"SEC"},{rank:23,name:"Caleb Lomu",pos:"OT",school:"Utah",height:'6\'6"',weight:304,stats:{games:12},conf:"Pac-12"},{rank:24,name:"CJ Allen",pos:"LB",school:"Georgia",height:'6\'1"',weight:235,stats:{tackles:88,sacks:3.5,passDef:4,int:0,ff:2},conf:"SEC"},{rank:25,name:"Kayden McDonald",pos:"DL",school:"Ohio State",height:'6\'3"',weight:326,stats:{tackles:65,sacks:3.0,passDef:1,int:0,ff:2},conf:"Big Ten"},{rank:26,name:"KC Concepcion",pos:"WR",school:"Texas A&M",height:'5\'11"',weight:190,stats:{rec:61,recYds:919,td:9,avg:15.1,rushYds:75},conf:"SEC"},{rank:27,name:"Ty Simpson",pos:"QB",school:"Alabama",height:'6\'2"',weight:208,stats:{passYds:3567,td:28,int:5,pct:64.5,rating:145.2},conf:"SEC"},{rank:28,name:"T.J. Parker",pos:"EDGE",school:"Clemson",height:'6\'3"',weight:265,stats:{tackles:37,sacks:5.0,passDef:1,int:0,ff:0},conf:"ACC"},{rank:29,name:"Caleb Banks",pos:"DL",school:"Florida",height:'6\'6"',weight:329,stats:{tackles:6,sacks:0.0,passDef:0,int:0,ff:0},conf:"SEC"},{rank:30,name:"Brandon Cisse",pos:"CB",school:"South Carolina",height:'6\'0"',weight:190,stats:{tackles:27,sacks:0.0,passDef:5,int:1,ff:1},conf:"SEC"},{rank:31,name:"Akheem Mesidor",pos:"EDGE",school:"Miami",height:'6\'3"',weight:265,stats:{tackles:63,sacks:12.5,passDef:0,int:0,ff:4},conf:"ACC"},{rank:32,name:"Monroe Freeling",pos:"OT",school:"Georgia",height:'6\'7"',weight:315,stats:{games:14},conf:"SEC"},{rank:33,name:"Colton Hood",pos:"CB",school:"Tennessee",height:'6\'0"',weight:195,stats:{tackles:50,sacks:0.0,passDef:8,int:1,ff:1},conf:"SEC"},{rank:34,name:"Emmanuel McNeil-Warren",pos:"S",school:"Toledo",height:'6\'2"',weight:202,stats:{tackles:77,sacks:0.5,passDef:5,int:2,ff:3},conf:"MAC"},{rank:35,name:"Anthony Hill Jr.",pos:"LB",school:"Texas",height:'6\'3"',weight:235,stats:{tackles:69,sacks:4.0,passDef:1,int:2,ff:3},conf:"SEC"},{rank:36,name:"Emmanuel Pregnon",pos:"IOL",school:"Oregon",height:'6\'5"',weight:320,stats:{games:15},conf:"Big Ten"},{rank:37,name:"Lee Hunter",pos:"DL",school:"Texas Tech",height:'6\'4"',weight:330,stats:{tackles:41,sacks:2.5,passDef:0,int:0,ff:1},conf:"Big 12"},{rank:38,name:"Dillon Thieneman",pos:"S",school:"Oregon",height:'6\'0"',weight:207,stats:{tackles:96,sacks:1.0,passDef:5,int:2,ff:0},conf:"Big Ten"},{rank:39,name:"Blake Miller",pos:"OT",school:"Clemson",height:'6\'6"',weight:310,stats:{games:13},conf:"ACC"},{rank:40,name:"R Mason Thomas",pos:"EDGE",school:"Oklahoma",height:'6\'2"',weight:249,stats:{tackles:26,sacks:6.5,passDef:1,int:0,ff:2},conf:"SEC"}];
+
+const espnIds={"Ohio State":194,"Miami":2390,"Indiana":84,"Texas Tech":2641,"Utah":254,"Notre Dame":87,"Arizona State":9,"LSU":99,"USC":30,"Tennessee":2633,"Auburn":2,"Clemson":228,"Oregon":2483,"Penn State":213,"Washington":264,"Texas A&M":245,"Alabama":333,"Georgia":61,"Florida":57,"South Carolina":2579,"Toledo":2649,"Texas":251,"Oklahoma":201,"Louisville":97};
+
+function logoUrl(school){const id=espnIds[school];return id?`https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/${id}.png&h=40&w=40`:null}
+function logoHtml(school,size=32){const url=logoUrl(school);if(url)return`<img src="${url}" class="school-logo" style="width:${size}px;height:${size}px" alt="${school}" onerror="this.outerHTML=fallbackLogo('${school}',${size})">`;return fallbackLogo(school,size)}
+function fallbackLogo(school,size=32){const initials=school.split(' ').map(w=>w[0]).join('').slice(0,2);return`<div class="school-logo-fallback" style="width:${size}px;height:${size}px;font-size:${size*.35}px">${initials}</div>`}
+function nameSlug(name){return name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-+$/,'')}
+
+const defPositions=['DL','EDGE','LB','CB','S'];
+const offLinePositions=['OT','IOL'];
+function getStatColumns(pos){
+  if(pos==='QB')return[{key:'passYds',label:'PASS YDS'},{key:'td',label:'TD'},{key:'int',label:'INT'},{key:'pct',label:'PCT%'},{key:'rating',label:'RTG'}];
+  if(pos==='RB')return[{key:'rushYds',label:'RUSH YDS'},{key:'td',label:'TD'},{key:'avg',label:'AVG'},{key:'recYds',label:'REC YDS'},{key:'recTD',label:'REC TD'}];
+  if(pos==='WR'||pos==='TE')return[{key:'rec',label:'REC'},{key:'recYds',label:'REC YDS'},{key:'td',label:'TD'},{key:'avg',label:'AVG'},{key:'rushYds',label:'RUSH YDS'}];
+  if(offLinePositions.includes(pos))return[{key:'games',label:'GAMES'}];
+  return[{key:'tackles',label:'TKL'},{key:'sacks',label:'SACKS'},{key:'passDef',label:'PD'},{key:'int',label:'INT'},{key:'ff',label:'FF'}];
+}
+
+let activePos='ALL',activeView='rank',sortCol=null,sortDir='asc',searchTerm='',activePlayer=null;
+
+function getFiltered(){
+  let list=[...prospects];
+  if(activePos!=='ALL')list=list.filter(p=>p.pos===activePos);
+  if(searchTerm){const q=searchTerm.toLowerCase();list=list.filter(p=>p.name.toLowerCase().includes(q)||p.school.toLowerCase().includes(q))}
+  if(sortCol){list.sort((a,b)=>{let va=a.stats[sortCol]??a[sortCol]??0,vb=b.stats[sortCol]??b[sortCol]??0;if(typeof va==='string')va=va.toLowerCase();if(typeof vb==='string')vb=vb.toLowerCase();return sortDir==='asc'?(va>vb?1:-1):(va<vb?1:-1)})}
+  return list;
+}
+
+function renderBoard(){
+  const list=getFiltered();
+  const board=document.getElementById('board');
+  if(!list.length){board.innerHTML='<div class="empty-state"><h3>No prospects found</h3><p style="margin-top:8px">Try adjusting your filters</p></div>';return}
+  
+  if(activeView==='school'){renderBySchool(list);return}
+  
+  // Determine columns
+  let cols;
+  if(activePos!=='ALL'){cols=getStatColumns(activePos)}
+  else{cols=[{key:'_dynamic',label:'KEY STATS'}]}
+  
+  let html='<table><thead><tr>';
+  html+='<th style="width:50px" data-sort="rank">RK</th>';
+  html+='<th>PLAYER</th>';
+  html+='<th>HT/WT</th>';
+  if(activePos!=='ALL'){cols.forEach(c=>{html+=`<th class="stat-cell${sortCol===c.key?' sorted-'+sortDir:''}" data-sort="${c.key}">${c.label}</th>`})}
+  else{html+='<th class="stat-cell" colspan="5">STATS</th>'}
+  html+='</tr></thead><tbody>';
+  
+  list.forEach(p=>{
+    const isActive=activePlayer&&activePlayer.rank===p.rank;
+    html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
+    html+=`<td class="rank-cell${p.rank<=5?' top5':''}">${p.rank}</td>`;
+    html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div></div></div></td>`;
+    html+=`<td class="measurables">${p.height} / ${p.weight} lbs</td>`;
+    
+    const myCols=activePos!=='ALL'?getStatColumns(p.pos):getStatColumns(p.pos);
+    myCols.forEach(c=>{
+      const v=p.stats[c.key];
+      html+=`<td class="stat-cell${v&&v>0?' highlight':''}">${v!==undefined?v:'—'}</td>`;
+    });
+    // pad if fewer cols
+    if(activePos==='ALL'){for(let i=myCols.length;i<5;i++)html+='<td class="stat-cell"></td>'}
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  board.innerHTML=html;
+}
+
+function renderBySchool(list){
+  const schools={};
+  list.forEach(p=>{if(!schools[p.school])schools[p.school]=[];schools[p.school].push(p)});
+  const sorted=Object.entries(schools).sort((a,b)=>Math.min(...a[1].map(p=>p.rank))-Math.min(...b[1].map(p=>p.rank)));
+  
+  let html='<table><thead><tr><th style="width:50px">RK</th><th>PLAYER</th><th>HT/WT</th><th class="stat-cell" colspan="5">STATS</th></tr></thead>';
+  sorted.forEach(([school,players])=>{
+    html+=`<tbody><tr><td colspan="8" class="school-group-header">${logoHtml(school,24)} ${school} (${players.length})</td></tr>`;
+    players.forEach(p=>{
+      const isActive=activePlayer&&activePlayer.rank===p.rank;
+      html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
+      html+=`<td class="rank-cell${p.rank<=5?' top5':''}">${p.rank}</td>`;
+      html+=`<td><div class="player-info"><div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.conf}</div></div></div></td>`;
+      html+=`<td class="measurables">${p.height} / ${p.weight} lbs</td>`;
+      const myCols=getStatColumns(p.pos);
+      myCols.forEach(c=>{const v=p.stats[c.key];html+=`<td class="stat-cell${v&&v>0?' highlight':''}">${v!==undefined?v:'—'}</td>`});
+      for(let i=myCols.length;i<5;i++)html+='<td class="stat-cell"></td>';
+      html+='</tr>';
+    });
+    html+='</tbody>';
+  });
+  html+='</table>';
+  document.getElementById('board').innerHTML=html;
+}
+
+function renderProfile(name){
+  const pr=profiles[name];
+  if(!pr)return '<div class="detail-section"><h3>Scouting Report</h3><div class="scouting-notes">Scouting report coming soon. Check back after the NFL Combine (Feb 27 – Mar 2, 2026) for updated evaluations and measurables.</div></div>';
+  let h='';
+  if(pr.nflComp){h+='<div class="detail-section"><h3>NFL Comparison</h3><div style="font-size:20px;font-weight:700;color:var(--accent);margin-bottom:4px">Shades of '+pr.nflComp+'</div>'+(pr.tagline?'<div style="font-size:14px;color:var(--text);margin-top:8px;font-style:italic">'+pr.tagline+'</div>':'')+(pr.ringerRank?'<div style="font-size:12px;color:var(--muted);margin-top:6px">The Ringer Big Board: #'+pr.ringerRank+'</div>':'')+(pr.bruglerRank?'<div style="font-size:12px;color:var(--muted)">Dane Brugler Top 50: #'+pr.bruglerRank+'</div>':'')+(pr.age?'<div style="font-size:12px;color:var(--muted)">Age: '+pr.age+' · '+(pr.class||'')+'</div>':'')+'</div>'}
+  if(pr.traits&&pr.traits.length){h+='<div class="detail-section"><div style="display:flex;flex-wrap:wrap;gap:8px">'+pr.traits.map(function(t){return '<span style="background:rgba(94,165,214,.15);color:var(--accent);padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600">'+t+'</span>'}).join('')+'</div></div>'}
+  if(pr.bruglerNote){h+='<div class="detail-section"><h3>📰 Brugler\'s Top 50 Summary</h3><div style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--text);border-left:3px solid var(--accent);padding-left:14px;font-style:italic">'+pr.bruglerNote+'</div></div>'}
+  if(pr.strengths){h+='<div class="detail-section"><h3>💪 Strengths</h3><div style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--text)">'+pr.strengths+'</div></div>'}
+  if(pr.weaknesses){h+='<div class="detail-section"><h3>⚠️ Weaknesses</h3><div style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--text)">'+pr.weaknesses+'</div></div>'}
+  if(pr.background){h+='<div class="detail-section"><h3>📋 Background</h3><div style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--text)">'+pr.background+'</div></div>'}
+  if(pr.funFacts&&pr.funFacts.length){h+='<div class="detail-section"><h3>🎯 Fun Facts</h3><ul style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--muted);padding-left:18px">'+pr.funFacts.map(function(f){return '<li style="margin-bottom:6px">'+f+'</li>'}).join('')+'</ul></div>'}
+  if(pr.scoutReport){h+='<div class="detail-section"><h3>📰 Dane Brugler\'s Take</h3><div class="scouting-notes">'+pr.scoutReport.split('\n').map(function(para){return para.trim()?'<p style="margin-bottom:10px;font-style:normal;color:var(--text)">'+para+'</p>':''}).join('')+'<div style="margin-top:12px;font-size:11px;color:var(--muted)">Source: '+pr.source+'</div></div></div>'}
+  else if(!pr.strengths){h+='<div class="detail-section"><h3>Scouting Report</h3><div class="scouting-notes">Scouting report coming soon. Check back after the NFL Combine (Feb 27 – Mar 2, 2026) for updated evaluations and measurables.</div></div>'}
+  return h;
+}
+
+function showDetail(rank){
+  const p=prospects.find(x=>x.rank===rank);if(!p)return;
+  activePlayer=p;
+  const panel=document.getElementById('detailPanel');
+  const inner=document.getElementById('detailInner');
+  const slug=nameSlug(p.name);
+  const ytQuery=encodeURIComponent(`2026 NFL Draft ${p.name} highlights all 22`);
+  const cols=getStatColumns(p.pos);
+  
+  let statsHtml='<div class="stats-grid">';
+  cols.forEach(c=>{const v=p.stats[c.key];statsHtml+=`<div class="stat-box"><div class="stat-box-val">${v!==undefined?v:'—'}</div><div class="stat-box-label">${c.label}</div></div>`});
+  statsHtml+='</div>';
+  
+  inner.innerHTML=`
+    <div class="detail-toolbar">
+      <div class="detail-toolbar-left">
+        <div class="detail-close" onclick="closeDetail()">← Back to Board</div>
+      </div>
+      <div class="detail-toolbar-right">
+        <div class="font-slider">
+          <button onclick="adjustFont(-1)">−</button>
+          <div class="font-dots" id="fontDots"></div>
+          <button onclick="adjustFont(1)">+</button>
+        </div>
+        <button class="detail-btn" id="fullscreenBtn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+      </div>
+    </div>
+    <div class="detail-header">
+      ${logoHtml(p.school,56).replace('school-logo"','detail-logo"').replace('school-logo-fallback"','detail-logo-fallback"')}
+      <div>
+        <div class="detail-name">${p.name}</div>
+        <div class="detail-pos"><span class="pos-badge pos-${p.pos}">${p.pos}</span> ${p.school} • ${p.conf} • #${p.rank} Overall</div>
+      </div>
+    </div>
+    <div class="detail-measurables">
+      <div class="detail-meas-item"><div class="detail-meas-val">${p.height}</div><div class="detail-meas-label">Height</div></div>
+      <div class="detail-meas-item"><div class="detail-meas-val">${p.weight}</div><div class="detail-meas-label">Weight</div></div>
+      <div class="detail-meas-item"><div class="detail-meas-val">${p.conf}</div><div class="detail-meas-label">Conference</div></div>
+    </div>
+    ${renderProfile(p.name)}
+    <div class="detail-section"><h3>🎬 Highlights</h3><a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" class="yt-link">▶ Watch ${p.name} Highlights on YouTube</a></div>
+    <div class="detail-section"><h3>Season Stats</h3>${statsHtml}</div>
+    <div class="detail-section"><h3>📋 Source Profiles</h3><div class="source-links">
+      <a href="https://www.nytimes.com/athletic/author/dane-brugler/" target="_blank" class="source-link">📰 The Athletic — Dane Brugler</a>
+      <a href="https://www.theringer.com/nfl-draft/2026/big-board" target="_blank" class="source-link">📊 The Ringer Big Board</a>
+      <a href="https://www.nfl.com/draft/tracker/prospects/all-positions/all-colleges/all-statuses/2026" target="_blank" class="source-link">🏈 NFL.com Draft Tracker</a>
+      <a href="https://www.nfldraftbuzz.com/Player/${slug}/2026" target="_blank" class="source-link">🔍 NFLDraftBuzz</a>
+      <a href="https://www.tankathon.com/nfl/players/${slug}" target="_blank" class="source-link">📈 Tankathon</a>
+    </div></div>`;
+  panel.classList.add('open');
+  if(isFullscreen)panel.classList.add('fullscreen');
+  applyFontSize();
+  renderBoard();
+}
+
+let detailFontSize=parseInt(localStorage.getItem('draftFontSize'))||14;
+let isFullscreen=false;
+
+const fontSteps=[12,14,16,18,20,22,24,26,28];
+function applyFontSize(){
+  document.documentElement.style.setProperty('--detail-font',detailFontSize+'px');
+  localStorage.setItem('draftFontSize',detailFontSize);
+  const dots=document.getElementById('fontDots');
+  if(!dots)return;
+  const idx=fontSteps.indexOf(detailFontSize);
+  dots.innerHTML=fontSteps.map(function(s,i){return '<div class="font-dot'+(i===idx?' active':'')+'" onclick="setFont('+i+')"></div>'}).join('');
+}
+function setFont(i){detailFontSize=fontSteps[i];applyFontSize();}
+
+function adjustFont(dir){
+  var idx=fontSteps.indexOf(detailFontSize);
+  if(idx===-1)idx=1;
+  idx=Math.min(fontSteps.length-1,Math.max(0,idx+dir));
+  detailFontSize=fontSteps[idx];
+  applyFontSize();
+}
+
+function toggleFullscreen(){
+  const panel=document.getElementById('detailPanel');
+  const btn=document.getElementById('fullscreenBtn');
+  isFullscreen=!isFullscreen;
+  panel.classList.toggle('fullscreen',isFullscreen);
+  if(btn)btn.innerHTML=isFullscreen?'↙ Exit Fullscreen':'⛶ Fullscreen';
+  if(btn)btn.classList.toggle('active',isFullscreen);
+}
+
+function closeDetail(){
+  activePlayer=null;
+  const panel=document.getElementById('detailPanel');
+  panel.classList.remove('open','fullscreen');
+  isFullscreen=false;
+  renderBoard();
+}
+
+// Event listeners
+document.querySelectorAll('.pill').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activePos=btn.dataset.pos;sortCol=null;renderBoard()})});
+document.querySelectorAll('.tab-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeView=btn.dataset.view;renderBoard()})});
+document.getElementById('searchBox').addEventListener('input',e=>{searchTerm=e.target.value;renderBoard()});
+document.getElementById('board').addEventListener('click',e=>{const th=e.target.closest('th[data-sort]');if(th){const col=th.dataset.sort;if(sortCol===col)sortDir=sortDir==='asc'?'desc':'asc';else{sortCol=col;sortDir=col==='rank'?'asc':'desc'}renderBoard()}});
+
+renderBoard();
+</script>
+</body>
+</html>
