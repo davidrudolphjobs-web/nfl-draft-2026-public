@@ -328,9 +328,8 @@ function showDetail(rank){
   const ytQuery=encodeURIComponent(`2026 NFL Draft ${p.name} highlights all 22`);
   const cols=getStatColumns(p.pos);
   
-  let statsHtml='<div class="stats-grid">';
-  cols.forEach(c=>{const v=p.stats[c.key];statsHtml+=`<div class="stat-box"><div class="stat-box-val">${v!==undefined?v:'—'}</div><div class="stat-box-label">${c.label}</div></div>`});
-  statsHtml+='</div>';
+  let statsHtml='';
+  cols.forEach(c=>{const v=p.stats[c.key];statsHtml+=`<div class="detail-meas-item"><div class="detail-meas-val">${v!==undefined?v:'—'}</div><div class="detail-meas-label">${c.label}</div></div>`});
   
   inner.innerHTML=`
     <div class="detail-toolbar">
@@ -357,10 +356,11 @@ function showDetail(rank){
       <div class="detail-meas-item"><div class="detail-meas-val">${p.height}</div><div class="detail-meas-label">Height</div></div>
       <div class="detail-meas-item"><div class="detail-meas-val">${p.weight}</div><div class="detail-meas-label">Weight</div></div>
       <div class="detail-meas-item"><div class="detail-meas-val">${p.conf}</div><div class="detail-meas-label">Conference</div></div>
+      <div style="width:1px;background:var(--border);margin:0 4px;align-self:stretch;opacity:.5"></div>
+      ${statsHtml}
     </div>
     <div class="detail-section"><h3>🎬 Highlights</h3><a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" class="yt-link">▶ Watch ${p.name} Highlights on YouTube</a></div>
     ${renderProfile(p.name)}
-    <div class="detail-section"><h3>Season Stats</h3>${statsHtml}</div>
     <div class="detail-section"><h3>📋 Source Profiles</h3><div class="source-links">
       <a href="https://www.nytimes.com/athletic/author/dane-brugler/" target="_blank" class="source-link">📰 The Athletic — Dane Brugler</a>
       <a href="https://www.theringer.com/nfl-draft/2026/big-board" target="_blank" class="source-link">📊 The Ringer Big Board</a>
