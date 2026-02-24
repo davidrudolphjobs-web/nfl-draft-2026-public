@@ -413,7 +413,9 @@ function closeDetail(){
   const panel=document.getElementById('detailPanel');
   panel.classList.remove('open','fullscreen');
   isFullscreen=false;
+  panel.style.width='';
   renderBoard();
+  setTimeout(renderBoard,320);
 }
 
 document.addEventListener('keydown',function(e){
