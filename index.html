@@ -211,24 +211,23 @@ function renderBoard(){
   html+='<th style="width:50px" data-sort="rank">RK</th>';
   html+='<th>PLAYER</th>';
   html+='<th>HT/WT</th>';
-  if(activePos!=='ALL'){cols.forEach(c=>{html+=`<th class="stat-cell${sortCol===c.key?' sorted-'+sortDir:''}" data-sort="${c.key}">${c.label}</th>`})}
-  else{html+='<th class="stat-cell" colspan="5">STATS</th>'}
+  html+='<th style="color:var(--muted);font-size:11px;font-weight:600;text-align:left;padding-left:16px">SCOUTING SNAPSHOT</th>';
   html+='</tr></thead><tbody>';
   
   list.forEach(p=>{
     const isActive=activePlayer&&activePlayer.rank===p.rank;
+    const pr=profiles[p.name];
+    const snippet=(()=>{
+      const txt=pr&&pr.bruglerNote?pr.bruglerNote:(pr&&pr.tagline?pr.tagline:'');
+      if(!txt)return '<span style="color:var(--muted);font-style:italic">Scouting data coming</span>';
+      const firstTwo=txt.match(/[^.!?]+[.!?]+(?:\s+[^.!?]+[.!?]+)?/);
+      return firstTwo?firstTwo[0].trim():txt.substring(0,120)+'…';
+    })();
     html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
     html+=`<td class="rank-cell${p.rank<=5?' top5':''}">${p.rank}</td>`;
     html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div></div></div></td>`;
     html+=`<td class="measurables">${p.height} / ${p.weight} lbs</td>`;
-    
-    const myCols=activePos!=='ALL'?getStatColumns(p.pos):getStatColumns(p.pos);
-    myCols.forEach(c=>{
-      const v=p.stats[c.key];
-      html+=`<td class="stat-cell${v&&v>0?' highlight':''}">${v!==undefined?v:'—'}</td>`;
-    });
-    // pad if fewer cols
-    if(activePos==='ALL'){for(let i=myCols.length;i<5;i++)html+='<td class="stat-cell"></td>'}
+    html+=`<td style="font-size:12px;color:var(--muted);line-height:1.5;padding:10px 16px;max-width:420px">${snippet}</td>`;
     html+='</tr>';
   });
   html+='</tbody></table>';
@@ -240,18 +239,18 @@ function renderBySchool(list){
   list.forEach(p=>{if(!schools[p.school])schools[p.school]=[];schools[p.school].push(p)});
   const sorted=Object.entries(schools).sort((a,b)=>Math.min(...a[1].map(p=>p.rank))-Math.min(...b[1].map(p=>p.rank)));
   
-  let html='<table><thead><tr><th style="width:50px">RK</th><th>PLAYER</th><th>HT/WT</th><th class="stat-cell" colspan="5">STATS</th></tr></thead>';
+  let html='<table><thead><tr><th style="width:50px">RK</th><th>PLAYER</th><th>HT/WT</th><th style="color:var(--muted);font-size:11px;font-weight:600;text-align:left;padding-left:16px">SCOUTING SNAPSHOT</th></tr></thead>';
   sorted.forEach(([school,players])=>{
-    html+=`<tbody><tr><td colspan="8" class="school-group-header">${logoHtml(school,24)} ${school} (${players.length})</td></tr>`;
+    html+=`<tbody><tr><td colspan="4" class="school-group-header">${logoHtml(school,24)} ${school} (${players.length})</td></tr>`;
     players.forEach(p=>{
       const isActive=activePlayer&&activePlayer.rank===p.rank;
+      const pr=profiles[p.name];
+      const snippet=(()=>{const txt=pr&&pr.bruglerNote?pr.bruglerNote:(pr&&pr.tagline?pr.tagline:'');if(!txt)return '<span style="color:var(--muted);font-style:italic">Scouting data coming</span>';const firstTwo=txt.match(/[^.!?]+[.!?]+(?:\s+[^.!?]+[.!?]+)?/);return firstTwo?firstTwo[0].trim():txt.substring(0,120)+'…'})();
       html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
       html+=`<td class="rank-cell${p.rank<=5?' top5':''}">${p.rank}</td>`;
       html+=`<td><div class="player-info"><div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.conf}</div></div></div></td>`;
       html+=`<td class="measurables">${p.height} / ${p.weight} lbs</td>`;
-      const myCols=getStatColumns(p.pos);
-      myCols.forEach(c=>{const v=p.stats[c.key];html+=`<td class="stat-cell${v&&v>0?' highlight':''}">${v!==undefined?v:'—'}</td>`});
-      for(let i=myCols.length;i<5;i++)html+='<td class="stat-cell"></td>';
+      html+=`<td style="font-size:12px;color:var(--muted);line-height:1.5;padding:10px 16px;max-width:420px">${snippet}</td>`;
       html+='</tr>';
     });
     html+='</tbody>';
