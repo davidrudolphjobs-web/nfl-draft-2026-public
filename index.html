@@ -67,8 +67,11 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .stat-label{display:none;font-size:9px;color:var(--muted);text-transform:uppercase}
 
 /* Detail Panel */
-.detail-panel{width:0;overflow:hidden;transition:width .3s ease,opacity .2s;background:linear-gradient(180deg,#131d29 0%,var(--bg) 100%);border-left:1px solid var(--border);opacity:0;flex-shrink:0}
+.detail-panel{width:0;overflow:hidden;transition:width .3s ease,opacity .2s;background:linear-gradient(180deg,#131d29 0%,var(--bg) 100%);border-left:1px solid var(--border);opacity:0;flex-shrink:0;position:relative}
 .detail-panel.open{width:480px;opacity:1;overflow-y:auto}
+.detail-panel.resizing{transition:none;user-select:none}
+.drag-handle{position:absolute;left:0;top:0;width:6px;height:100%;cursor:col-resize;z-index:10;background:transparent;transition:background .2s}
+.drag-handle:hover,.drag-handle.active{background:var(--accent);opacity:.4}
 .detail-panel.fullscreen{position:fixed!important;top:0;left:0;width:100%!important;height:100vh;z-index:200;border-left:none}
 .detail-inner{padding:24px;min-width:480px;font-size:var(--detail-font,14px)}
 .detail-panel.fullscreen .detail-inner{max-width:800px;margin:0 auto;min-width:auto}
@@ -200,6 +203,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 <div class="main-content">
   <div class="board" id="board"></div>
   <div class="detail-panel" id="detailPanel">
+    <div class="drag-handle" id="dragHandle"></div>
     <div class="detail-inner" id="detailInner"></div>
   </div>
 </div>
@@ -366,6 +370,8 @@ function showDetail(rank){
     </div></div>`;
   panel.classList.add('open');
   if(isFullscreen)panel.classList.add('fullscreen');
+  const savedW=localStorage.getItem('detailPanelWidth');
+  if(savedW&&!isFullscreen)panel.style.width=savedW+'px';
   applyFontSize();
   renderBoard();
 }
@@ -412,6 +418,38 @@ function closeDetail(){
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'&&activePlayer)closeDetail();
 });
+
+// Resizable panel
+(function(){
+  const handle=document.getElementById('dragHandle');
+  const panel=document.getElementById('detailPanel');
+  let startX,startW;
+  handle.addEventListener('mousedown',function(e){
+    if(isFullscreen)return;
+    startX=e.clientX;
+    startW=panel.offsetWidth;
+    panel.classList.add('resizing');
+    handle.classList.add('active');
+    document.addEventListener('mousemove',onDrag);
+    document.addEventListener('mouseup',onUp);
+    e.preventDefault();
+  });
+  function onDrag(e){
+    const dx=startX-e.clientX;
+    const newW=Math.min(900,Math.max(320,startW+dx));
+    panel.style.width=newW+'px';
+  }
+  function onUp(){
+    panel.classList.remove('resizing');
+    handle.classList.remove('active');
+    document.removeEventListener('mousemove',onDrag);
+    document.removeEventListener('mouseup',onUp);
+    localStorage.setItem('detailPanelWidth',panel.offsetWidth);
+  }
+  // Restore saved width
+  const saved=localStorage.getItem('detailPanelWidth');
+  if(saved)panel.style.setProperty('--saved-panel-w',saved+'px');
+})();
 
 // Event listeners
 document.querySelectorAll('.pill').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activePos=btn.dataset.pos;sortCol=null;renderBoard()})});
