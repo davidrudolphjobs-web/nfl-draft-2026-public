@@ -409,6 +409,10 @@ function closeDetail(){
   renderBoard();
 }
 
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&activePlayer)closeDetail();
+});
+
 // Event listeners
 document.querySelectorAll('.pill').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activePos=btn.dataset.pos;sortCol=null;renderBoard()})});
 document.querySelectorAll('.tab-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeView=btn.dataset.view;renderBoard()})});
