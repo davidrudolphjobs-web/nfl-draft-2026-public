@@ -57,6 +57,8 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .player-name{font-weight:600;font-size:14px}
 .nfl-grade-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:#00d4aa;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.3);border-radius:4px;padding:1px 5px;letter-spacing:0.02em;margin-top:3px;white-space:nowrap}
 .grade-info-btn{color:#00d4aa;opacity:0.6;text-decoration:none;font-size:10px;font-weight:400;line-height:1;cursor:pointer;transition:.15s}.grade-info-btn:hover{opacity:1}
+.col-nfl{text-align:center;width:80px}
+@media(max-width:600px){.col-nfl{display:none}}
 .grade-key-section{margin:2rem auto;max-width:900px;padding:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:12px}
 .grade-key-section h4{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
 .grade-key-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem .5rem}
@@ -255,25 +257,41 @@ function getFiltered(){
   return list;
 }
 
+let sortCol='rank', sortDir='asc';
+function toggleSort(col){
+  if(sortCol===col){sortDir=sortDir==='asc'?'desc':'asc';}
+  else{sortCol=col;sortDir=col==='nfl'?'desc':'asc';}
+  renderBoard();
+}
+function sortIcon(col){
+  if(sortCol!==col)return '<span style="opacity:.3;font-size:9px"> ↕</span>';
+  return sortDir==='asc'?'<span style="font-size:9px"> ↑</span>':'<span style="font-size:9px"> ↓</span>';
+}
+
 function renderBoard(){
-  const list=getFiltered();
+  let list=getFiltered();
   const board=document.getElementById('board');
   if(!list.length){board.innerHTML='<div class="empty-state"><h3>No prospects found</h3><p style="margin-top:8px">Try adjusting your filters</p></div>';return}
-  
   if(activeView==='school'){renderBySchool(list);return}
-  
-  // Determine columns
-  let cols;
-  if(activePos!=='ALL'){cols=getStatColumns(activePos)}
-  else{cols=[{key:'_dynamic',label:'KEY STATS'}]}
-  
+
+  // Apply sort
+  list=[...list].sort((a,b)=>{
+    const pr_a=profiles[a.name], pr_b=profiles[b.name];
+    if(sortCol==='nfl'){
+      const ga=pr_a&&pr_a.nflGrade||0, gb=pr_b&&pr_b.nflGrade||0;
+      return sortDir==='asc'?ga-gb:gb-ga;
+    }
+    return sortDir==='asc'?a.rank-b.rank:b.rank-a.rank;
+  });
+
   let html='<table><thead><tr>';
-  html+='<th style="width:50px" data-sort="rank">RK</th>';
+  html+=`<th style="width:50px;cursor:pointer;user-select:none" onclick="toggleSort('rank')">RK${sortIcon('rank')}</th>`;
   html+='<th>PLAYER</th>';
+  html+=`<th class="col-nfl" style="white-space:nowrap;cursor:pointer;user-select:none;color:var(--muted);font-size:11px;font-weight:600" onclick="toggleSort('nfl')">NFL${sortIcon('nfl')} <a href="#grade-key" class="grade-info-btn" style="font-size:10px" onclick="event.stopPropagation()">ⓘ</a></th>`;
   html+='<th class="col-htwt" style="white-space:nowrap">HT/WT</th>';
   html+='<th class="col-snapshot" style="color:var(--muted);font-size:11px;font-weight:600;text-align:left;padding-left:16px">SCOUTING SNAPSHOT</th>';
   html+='</tr></thead><tbody>';
-  
+
   list.forEach(p=>{
     const isActive=activePlayer&&activePlayer.rank===p.rank;
     const pr=profiles[p.name];
@@ -285,8 +303,8 @@ function renderBoard(){
     })();
     html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
     html+=`<td class="rank-cell${p.rank<=5?' top5':''}">${p.rank}</td>`;
-    const gradeBadge=pr&&pr.nflGrade?`<span class="nfl-grade-badge">NFL ${pr.nflGrade.toFixed(2)} <a href="#grade-key" class="grade-info-btn" onclick="event.stopPropagation()">ⓘ</a></span>`:'';
-    html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div>${gradeBadge}</div></div></td>`;
+    html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div></div></div></td>`;
+    html+=`<td class="col-nfl measurables">${pr&&pr.nflGrade?`<span class="nfl-grade-badge" style="margin:0">${pr.nflGrade.toFixed(2)}</span>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>`;
     html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
     html+=`<td class="col-snapshot" style="font-size:12px;color:var(--muted);line-height:1.5;padding:10px 16px;max-width:420px">${snippet}</td>`;
     html+='</tr>';
