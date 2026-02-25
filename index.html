@@ -84,14 +84,13 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .detail-btn{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--muted);cursor:pointer;font-size:12px;transition:.2s;display:flex;align-items:center;gap:4px}
 .detail-btn:hover{border-color:var(--accent);color:var(--accent)}
 .detail-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(94,165,214,.1)}
-.font-slider{display:flex;align-items:center;gap:0;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 8px}
-.font-slider button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;font-weight:700;width:28px;height:28px;display:flex;align-items:center;justify-content:center;transition:.2s}
+.font-slider{display:flex;align-items:center;gap:0;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 10px;height:36px;box-sizing:border-box}
+.font-slider button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;font-weight:700;width:24px;height:24px;display:flex;align-items:center;justify-content:center;transition:.2s}
 .font-slider button:hover{color:var(--accent)}
 .font-dots{display:flex;align-items:center;gap:4px;padding:0 6px}
-.font-slider .slider-divider{width:1px;height:18px;background:var(--border);margin:0 6px}
-.font-slider .fs-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;padding:0 4px;height:28px;display:flex;align-items:center;gap:4px;transition:.2s;white-space:nowrap}
-.font-slider .fs-btn:hover{color:var(--accent)}
-.font-slider .fs-btn.active{color:var(--accent)}
+.detail-btn{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 14px;height:36px;box-sizing:border-box;color:var(--muted);cursor:pointer;font-size:12px;font-weight:500;transition:.2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.detail-btn:hover{border-color:var(--accent);color:var(--accent)}
+.detail-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(94,165,214,.1)}
 .font-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:.35;transition:all .2s;cursor:pointer}
 .font-dot.active{opacity:1;transform:scale(1.5)}
 .detail-header{display:flex;align-items:center;gap:16px;margin-bottom:24px}
@@ -163,7 +162,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
   .detail-scroll{height:100vh}
   .detail-inner{min-width:auto;padding:16px}
   .detail-panel.fullscreen{position:fixed!important;top:0;left:0;width:100%!important}
-  .fs-btn{display:none}
+  .detail-btn{display:none}
 
   /* Detail header */
   .detail-name{font-size:18px}
@@ -349,9 +348,8 @@ function showDetail(rank){
           <button onclick="adjustFont(-1)">−</button>
           <div class="font-dots" id="fontDots"></div>
           <button onclick="adjustFont(1)">+</button>
-          <div class="slider-divider"></div>
-          <button class="fs-btn" id="fullscreenBtn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
         </div>
+        <button class="detail-btn" id="fullscreenBtn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
       </div>
     </div>
     <div class="detail-header">
@@ -413,7 +411,7 @@ function toggleFullscreen(){
   const btn=document.getElementById('fullscreenBtn');
   isFullscreen=!isFullscreen;
   panel.classList.toggle('fullscreen',isFullscreen);
-  if(btn)btn.innerHTML=isFullscreen?'↙ Exit':'⛶ Fullscreen';
+  if(btn)btn.innerHTML=isFullscreen?'↙ Exit Fullscreen':'⛶ Fullscreen';
   if(btn)btn.classList.toggle('active',isFullscreen);
 }
 
