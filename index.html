@@ -268,7 +268,7 @@ function sortIcon(col){
   return boardSortDir==='asc'?'<span style="font-size:9px"> ↑</span>':'<span style="font-size:9px"> ↓</span>';
 }
 
-function renderBoard(){
+function renderBoard(){try{
   let list=getFiltered();
   const board=document.getElementById('board');
   if(!list.length){board.innerHTML='<div class="empty-state"><h3>No prospects found</h3><p style="margin-top:8px">Try adjusting your filters</p></div>';return}
@@ -312,7 +312,7 @@ function renderBoard(){
   html+='</tbody></table>';
   html+=gradeKeyHTML();
   board.innerHTML=html;
-}
+}catch(e){document.getElementById('board').innerHTML='<div style="color:red;padding:20px;font-family:monospace">RenderBoard Error: '+e.message+'<br>'+e.stack+'</div>';}}
 
 function gradeKeyHTML(){return `<div class="grade-key-section" id="grade-key"><h4>NFL.com Grade Scale <span style="font-weight:400;text-transform:none;letter-spacing:0">— what the numbers mean</span></h4><div class="grade-key-grid"><div class="grade-key-row"><span class="grade-key-range">8.0</span><span class="grade-key-desc">The perfect prospect</span></div><div class="grade-key-row"><span class="grade-key-range">7.3–7.5</span><span class="grade-key-desc">Perennial All-Pro</span></div><div class="grade-key-row"><span class="grade-key-range">7.0–7.1</span><span class="grade-key-desc">Pro Bowl talent</span></div><div class="grade-key-row"><span class="grade-key-range">6.7–6.9</span><span class="grade-key-desc">Year 1 starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.5–6.6</span><span class="grade-key-desc">Boom-or-bust potential</span></div><div class="grade-key-row"><span class="grade-key-range">6.40–6.49</span><span class="grade-key-desc">Will become good starter within two years</span></div><div class="grade-key-row"><span class="grade-key-range">6.30–6.39</span><span class="grade-key-desc">Will eventually be plus starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.20–6.29</span><span class="grade-key-desc">Will eventually be average starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.10–6.19</span><span class="grade-key-desc">Good backup with potential to develop into starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.0–6.09</span><span class="grade-key-desc">Traits or talent to be above-average backup</span></div><div class="grade-key-row"><span class="grade-key-range">5.80–5.99</span><span class="grade-key-desc">Average backup or special-teamer</span></div><div class="grade-key-row"><span class="grade-key-range">5.60–5.69</span><span class="grade-key-desc">Candidate for bottom of roster or practice squad</span></div><div class="grade-key-row"><span class="grade-key-range">5.50–5.59</span><span class="grade-key-desc">Priority undrafted free agent</span></div><div class="grade-key-row"><span class="grade-key-range">No grade</span><span class="grade-key-desc">Grade not yet available</span></div></div><p class="grade-key-note">*Grades before 2014 were on a different grading system. Source: NFL.com</p></div>`;}
 
