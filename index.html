@@ -55,7 +55,15 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .player-info{display:flex;align-items:center;gap:10px;min-width:200px}
 .player-details{display:flex;flex-direction:column;gap:1px}
 .player-name{font-weight:600;font-size:14px}
-.nfl-grade-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#00d4aa;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.3);border-radius:4px;padding:1px 5px;letter-spacing:0.02em;margin-top:3px;white-space:nowrap}
+.nfl-grade-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:#00d4aa;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.3);border-radius:4px;padding:1px 5px;letter-spacing:0.02em;margin-top:3px;white-space:nowrap}
+.grade-info-btn{color:#00d4aa;opacity:0.6;text-decoration:none;font-size:10px;font-weight:400;line-height:1;cursor:pointer;transition:.15s}.grade-info-btn:hover{opacity:1}
+.grade-key-section{margin:2rem auto;max-width:900px;padding:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:12px}
+.grade-key-section h4{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.grade-key-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem .5rem}
+.grade-key-row{display:flex;gap:.5rem;font-size:11px;line-height:1.4}
+.grade-key-range{font-weight:700;color:#00d4aa;min-width:75px;flex-shrink:0}
+.grade-key-desc{color:var(--muted)}
+.grade-key-note{font-size:10px;color:var(--muted);font-style:italic;margin-top:.75rem}
 .player-meta{font-size:11px;color:var(--muted)}
 .pos-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;margin-right:4px}
 .pos-QB{background:#2a1a3a;color:#b388ff}.pos-RB{background:#1a3a2a;color:#69f0ae}.pos-WR{background:#3a2a1a;color:#ffab40}
@@ -277,15 +285,18 @@ function renderBoard(){
     })();
     html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
     html+=`<td class="rank-cell${p.rank<=5?' top5':''}">${p.rank}</td>`;
-    const gradeBadge=pr&&pr.nflGrade?`<span class="nfl-grade-badge">NFL ${pr.nflGrade.toFixed(2)}</span>`:'';
+    const gradeBadge=pr&&pr.nflGrade?`<span class="nfl-grade-badge">NFL ${pr.nflGrade.toFixed(2)} <a href="#grade-key" class="grade-info-btn" onclick="event.stopPropagation()">ⓘ</a></span>`:'';
     html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div>${gradeBadge}</div></div></td>`;
     html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
     html+=`<td class="col-snapshot" style="font-size:12px;color:var(--muted);line-height:1.5;padding:10px 16px;max-width:420px">${snippet}</td>`;
     html+='</tr>';
   });
   html+='</tbody></table>';
+  html+=gradeKeyHTML();
   board.innerHTML=html;
 }
+
+function gradeKeyHTML(){return `<div class="grade-key-section" id="grade-key"><h4>NFL.com Grade Scale <span style="font-weight:400;text-transform:none;letter-spacing:0">— what the numbers mean</span></h4><div class="grade-key-grid"><div class="grade-key-row"><span class="grade-key-range">8.0</span><span class="grade-key-desc">The perfect prospect</span></div><div class="grade-key-row"><span class="grade-key-range">7.3–7.5</span><span class="grade-key-desc">Perennial All-Pro</span></div><div class="grade-key-row"><span class="grade-key-range">7.0–7.1</span><span class="grade-key-desc">Pro Bowl talent</span></div><div class="grade-key-row"><span class="grade-key-range">6.7–6.9</span><span class="grade-key-desc">Year 1 starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.5–6.6</span><span class="grade-key-desc">Boom-or-bust potential</span></div><div class="grade-key-row"><span class="grade-key-range">6.40–6.49</span><span class="grade-key-desc">Will become good starter within two years</span></div><div class="grade-key-row"><span class="grade-key-range">6.30–6.39</span><span class="grade-key-desc">Will eventually be plus starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.20–6.29</span><span class="grade-key-desc">Will eventually be average starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.10–6.19</span><span class="grade-key-desc">Good backup with potential to develop into starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.0–6.09</span><span class="grade-key-desc">Traits or talent to be above-average backup</span></div><div class="grade-key-row"><span class="grade-key-range">5.80–5.99</span><span class="grade-key-desc">Average backup or special-teamer</span></div><div class="grade-key-row"><span class="grade-key-range">5.60–5.69</span><span class="grade-key-desc">Candidate for bottom of roster or practice squad</span></div><div class="grade-key-row"><span class="grade-key-range">5.50–5.59</span><span class="grade-key-desc">Priority undrafted free agent</span></div><div class="grade-key-row"><span class="grade-key-range">No grade</span><span class="grade-key-desc">Grade not yet available</span></div></div><p class="grade-key-note">*Grades before 2014 were on a different grading system. Source: NFL.com</p></div>`;}
 
 function renderBySchool(list){
   const schools={};
@@ -301,7 +312,7 @@ function renderBySchool(list){
       const snippet=(()=>{const txt=pr&&pr.bruglerNote?pr.bruglerNote:(pr&&pr.tagline?pr.tagline:'');if(!txt)return '<span style="color:var(--muted);font-style:italic">Scouting data coming</span>';const firstTwo=txt.match(/[^.!?]+[.!?]+(?:\s+[^.!?]+[.!?]+)?/);return firstTwo?firstTwo[0].trim():txt.substring(0,120)+'…'})();
       html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
       html+=`<td class="rank-cell${p.rank<=5?' top5':''}">${p.rank}</td>`;
-      const gb2=pr&&pr.nflGrade?`<span class="nfl-grade-badge">NFL ${pr.nflGrade.toFixed(2)}</span>`:'';
+      const gb2=pr&&pr.nflGrade?`<span class="nfl-grade-badge">NFL ${pr.nflGrade.toFixed(2)} <a href="#grade-key" class="grade-info-btn" onclick="event.stopPropagation()">ⓘ</a></span>`:'';
       html+=`<td><div class="player-info"><div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.conf}</div>${gb2}</div></div></td>`;
       html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
       html+=`<td class="col-snapshot" style="font-size:12px;color:var(--muted);line-height:1.5;padding:10px 16px;max-width:420px">${snippet}</td>`;
@@ -310,6 +321,7 @@ function renderBySchool(list){
     html+='</tbody>';
   });
   html+='</table>';
+  html+=gradeKeyHTML();
   document.getElementById('board').innerHTML=html;
 }
 
@@ -324,7 +336,7 @@ function renderProfile(name){
   if(pr.weaknesses){h+='<div class="detail-section"><h3>⚠️ Weaknesses</h3><div style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--text)">'+pr.weaknesses+'</div></div>'}
   if(pr.background){h+='<div class="detail-section"><h3>📋 Background</h3><div style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--text)">'+pr.background+'</div></div>'}
   if(pr.funFacts&&pr.funFacts.length){h+='<div class="detail-section"><h3>🎯 Fun Facts</h3><ul style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--muted);padding-left:18px">'+pr.funFacts.map(function(f){return '<li style="margin-bottom:6px">'+f+'</li>'}).join('')+'</ul></div>'}
-  if(pr.nflUrl){h+='<div class="detail-section"><h3 style="display:flex;align-items:center;gap:8px">🏈 NFL.com Profile'+(pr.nflGrade?'<span class="nfl-grade-badge" style="font-size:12px;padding:2px 8px">'+pr.nflGrade.toFixed(2)+'</span>':'')+'</h3><a href="'+pr.nflUrl+'" target="_blank" class="yt-link" style="color:var(--accent)">View full prospect profile on NFL.com →</a></div>'}
+  if(pr.nflUrl){h+='<div class="detail-section"><h3 style="display:flex;align-items:center;gap:8px">🏈 NFL.com Profile'+(pr.nflGrade?'<span class="nfl-grade-badge" style="font-size:12px;padding:2px 8px">'+pr.nflGrade.toFixed(2)+' <a href="#grade-key" class="grade-info-btn" style="font-size:11px">ⓘ</a></span>':'')+'</h3><a href="'+pr.nflUrl+'" target="_blank" class="yt-link" style="color:var(--accent)">View full prospect profile on NFL.com →</a></div>'}
   if(pr.scoutReport){h+='<div class="detail-section"><h3>📰 Dane Brugler\'s Take</h3><div class="scouting-notes">'+pr.scoutReport.split('\n').map(function(para){return para.trim()?'<p style="margin-bottom:10px;font-style:normal;color:var(--text)">'+para+'</p>':''}).join('')+'<div style="margin-top:12px;font-size:11px;color:var(--muted)">Source: '+pr.source+'</div></div></div>'}
   else if(!pr.strengths){h+='<div class="detail-section"><h3>Scouting Report</h3><div class="scouting-notes">Scouting report coming soon. Check back after the NFL Combine (Feb 27 – Mar 2, 2026) for updated evaluations and measurables.</div></div>'}
   return h;
