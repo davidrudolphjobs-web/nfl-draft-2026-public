@@ -257,15 +257,15 @@ function getFiltered(){
   return list;
 }
 
-let sortCol='rank', sortDir='asc';
+let boardSortCol='rank', boardSortDir='asc';
 function toggleSort(col){
-  if(sortCol===col){sortDir=sortDir==='asc'?'desc':'asc';}
-  else{sortCol=col;sortDir=col==='nfl'?'desc':'asc';}
+  if(boardSortCol===col){boardSortDir=boardSortDir==='asc'?'desc':'asc';}
+  else{boardSortCol=col;boardSortDir=col==='nfl'?'desc':'asc';}
   renderBoard();
 }
 function sortIcon(col){
-  if(sortCol!==col)return '<span style="opacity:.3;font-size:9px"> ↕</span>';
-  return sortDir==='asc'?'<span style="font-size:9px"> ↑</span>':'<span style="font-size:9px"> ↓</span>';
+  if(boardSortCol!==col)return '<span style="opacity:.3;font-size:9px"> ↕</span>';
+  return boardSortDir==='asc'?'<span style="font-size:9px"> ↑</span>':'<span style="font-size:9px"> ↓</span>';
 }
 
 function renderBoard(){
@@ -277,11 +277,11 @@ function renderBoard(){
   // Apply sort
   list=[...list].sort((a,b)=>{
     const pr_a=profiles[a.name], pr_b=profiles[b.name];
-    if(sortCol==='nfl'){
+    if(boardSortCol==='nfl'){
       const ga=pr_a&&pr_a.nflGrade||0, gb=pr_b&&pr_b.nflGrade||0;
-      return sortDir==='asc'?ga-gb:gb-ga;
+      return boardSortDir==='asc'?ga-gb:gb-ga;
     }
-    return sortDir==='asc'?a.rank-b.rank:b.rank-a.rank;
+    return boardSortDir==='asc'?a.rank-b.rank:b.rank-a.rank;
   });
 
   let html='<table><thead><tr>';
