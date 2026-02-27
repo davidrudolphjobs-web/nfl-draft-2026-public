@@ -82,7 +82,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .measurables{white-space:nowrap;color:var(--muted);font-size:12px}
 .col-dj{display:none;color:var(--muted);font-size:13px;line-height:1.6;padding:10px 14px;vertical-align:middle}
 body.board-wide .col-dj{display:table-cell}
-.col-combine{width:36px;text-align:center;vertical-align:middle;padding:0 4px}
+.col-combine{text-align:center;vertical-align:middle;padding:4px 10px;white-space:nowrap}
 .combine-dot{font-size:13px;cursor:default}
 .combine-fresh{display:inline-block;background:rgba(52,199,89,.18);color:#34c759;border:1px solid rgba(52,199,89,.35);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.3px}
 .combine-grid{display:flex;flex-wrap:wrap;gap:12px 20px;margin:10px 0}
@@ -351,7 +351,7 @@ function renderBoard(){
   html+=`<th style="width:50px;cursor:pointer;user-select:none" onclick="toggleSort('rank')">RK${sortIcon('rank')}</th>`;
   html+='<th>PLAYER</th>';
   html+='<th class="col-dj" style="font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted)">🎙️ DJ\'S TAKE</th>';
-  html+='<th class="col-combine" title="Combine data available">🟢</th>';
+  html+='<th class="col-combine" style="font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted);white-space:nowrap">Combine Data</th>';
   html+=`<th class="col-nfl" style="white-space:nowrap;cursor:pointer;user-select:none;color:var(--muted);font-size:11px;font-weight:600" onclick="toggleSort('nfl')">NFL${sortIcon('nfl')} <a href="#grade-key" class="grade-info-btn" style="font-size:10px" onclick="event.stopPropagation()">ⓘ</a></th>`;
   html+='<th class="col-htwt" style="white-space:nowrap">HT/WT</th>';
   
