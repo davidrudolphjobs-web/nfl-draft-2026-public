@@ -238,6 +238,14 @@ function detailLogoFallback(school){return logoHtml(school,64).replace('school-l
 function hsError(img){var pid=img.getAttribute('data-pid');var school=img.getAttribute('data-school');if(img.src.includes('prospect-headshots')){img.src='https://static.www.nfl.com/image/private/f_auto,q_85/league/god-draft-headshots/2026/'+pid;}else{img.outerHTML=detailLogoFallback(school);}}
 function headshot(p){const pr=profiles[p.name];const nflUrl=pr&&pr.nflUrl?pr.nflUrl:null;if(!nflUrl)return detailLogoFallback(p.school);const pid=nflUrl.split('/').pop();const url1='https://static.www.nfl.com/image/private/f_auto,q_85/league/god-prospect-headshots/2023/'+pid;return '<img src="'+url1+'" class="detail-logo-hs" data-pid="'+pid+'" data-school="'+p.school+'" alt="'+p.name+' headshot" onerror="hsError(this)">';}
 function nameSlug(name){return name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-+$/,'')}
+function buzzSlug(p){
+  const parts=p.name.replace(/\./g,'').split(' ');
+  const name=parts.join('-');
+  const school=p.school.replace(/[^a-zA-Z0-9]/g,'');
+  const posMap={'EDGE':'DE','IOL':'G','DL':'DT'};
+  const pos=posMap[p.pos]||p.pos;
+  return name+'-'+pos+'-'+school;
+}
 
 const defPositions=['DL','EDGE','LB','CB','S'];
 const offLinePositions=['OT','IOL'];
@@ -406,7 +414,7 @@ function showDetail(rank){
       
       <a href="https://www.theringer.com/nfl-draft/2026/big-board" target="_blank" class="source-link">📊 The Ringer Big Board</a>
       <a href="${(()=>{const pr=profiles[p.name];return pr&&pr.nflUrl?pr.nflUrl:'https://www.nfl.com/draft/tracker/prospects/all-positions/all-colleges/all-statuses/2026'})()}" target="_blank" class="source-link">🏈 NFL.com — ${p.name}</a>
-      <a href="https://www.nfldraftbuzz.com/Player/${slug}/2026" target="_blank" class="source-link">🔍 NFLDraftBuzz</a>
+      <a href="https://www.nfldraftbuzz.com/Player/${buzzSlug(p)}" target="_blank" class="source-link">🔍 NFLDraftBuzz</a>
       <a href="https://www.tankathon.com/nfl/players/${slug}" target="_blank" class="source-link">📈 Tankathon</a>
     </div></div>`;
   panel.classList.add('open');
