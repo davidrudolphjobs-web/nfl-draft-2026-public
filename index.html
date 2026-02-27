@@ -431,7 +431,7 @@ function showDetail(rank){
   panel.classList.add('open');
   if(isFullscreen)panel.classList.add('fullscreen');
   const savedW=localStorage.getItem('detailPanelWidth');
-  if(savedW&&!isFullscreen)panel.style.width=savedW+'px';
+  if(savedW&&!isFullscreen&&parseInt(savedW)<window.innerWidth-160)panel.style.width=savedW+'px';
   applyFontSize();
   renderBoard();
 }
@@ -498,7 +498,7 @@ document.addEventListener('keydown',function(e){
   });
   function onDrag(e){
     const dx=startX-e.clientX;
-    const newW=Math.min(900,Math.max(320,startW+dx));
+    const newW=Math.min(window.innerWidth-160,Math.max(320,startW+dx));
     panel.style.width=newW+'px';
   }
   function onUp(){
