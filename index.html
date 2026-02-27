@@ -82,6 +82,14 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .measurables{white-space:nowrap;color:var(--muted);font-size:12px}
 .col-dj{display:none;color:var(--muted);font-size:13px;line-height:1.6;padding:10px 14px;vertical-align:middle}
 body.board-wide .col-dj{display:table-cell}
+.col-combine{width:36px;text-align:center;vertical-align:middle;padding:0 4px}
+.combine-dot{font-size:13px;cursor:default}
+.combine-fresh{display:inline-block;background:rgba(52,199,89,.18);color:#34c759;border:1px solid rgba(52,199,89,.35);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.3px}
+.combine-grid{display:flex;flex-wrap:wrap;gap:12px 20px;margin:10px 0}
+.combine-item{display:flex;flex-direction:column;min-width:60px}
+.combine-val{font-size:22px;font-weight:700;color:var(--text);line-height:1}
+.combine-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+.combine-dnp{font-size:13px;color:var(--muted);font-style:italic;padding:6px 0}
 .stat-cell{font-size:13px;font-variant-numeric:tabular-nums;text-align:right;min-width:55px}
 .stat-cell.highlight{color:var(--accent);font-weight:600}
 .stat-label{display:none;font-size:9px;color:var(--muted);text-transform:uppercase}
@@ -245,6 +253,38 @@ function logoHtml(school,size=32){const url=logoUrl(school);if(url)return`<img s
 function fallbackLogo(school,size=32){const initials=school.split(' ').map(w=>w[0]).join('').slice(0,2);return`<div class="school-logo-fallback" style="width:${size}px;height:${size}px;font-size:${size*.35}px">${initials}</div>`}
 function detailLogoFallback(school){return logoHtml(school,64).replace('school-logo"','detail-logo"').replace('school-logo-fallback"','detail-logo-fallback"')}
 function hsError(img){var pid=img.getAttribute('data-pid');var school=img.getAttribute('data-school');if(img.src.includes('prospect-headshots')){img.src='https://static.www.nfl.com/image/private/f_auto,q_85/league/god-draft-headshots/2026/'+pid;}else{img.outerHTML=detailLogoFallback(school);}}
+const combineData={
+  "Arvell Reese":{ht:"6-4⅛",wt:241,hand:'9½"',arm:'32½"',wing:'79½"',forty:"4.46",split:"1.58"},
+  "Rueben Bain Jr.":{ht:"6-2¼",wt:263,hand:'9⅛"',arm:'30⅞"',wing:'77⅜"',dnp:true,dnpNote:"Elected not to participate in on-field drills"},
+  "David Bailey":{ht:"6-3½",wt:251,hand:'10¼"',arm:'33⅝"',wing:'79⅝"',forty:"4.50",split:"1.62",vert:'35"',broad:"10'9\""},
+  "Sonny Styles":{ht:"6-5",wt:244,hand:'10"',arm:'32⅞"',wing:'80⅞"',forty:"4.46",vert:'43.5"',broad:"11'2\""},
+  "Keldric Faulk":{ht:"6-5⅞",wt:276,hand:'9¾"',arm:'34⅜"',wing:'82¼"',vert:'35"',broad:"9'9\""},
+  "Peter Woods":{ht:"6-2½",wt:298,hand:'9⅛"',arm:'31¼"',wing:'76⅝"',dnp:true,dnpNote:"Did not participate in on-field drills"},
+  "Kayden McDonald":{ht:"6-2⅛",wt:326,hand:'9⅝"',arm:'32¼"',wing:'78⅛"',dnp:true,dnpNote:"Did not participate in on-field drills"},
+  "Akheem Mesidor":{ht:"6-3",wt:259,hand:'10"',arm:'32⅛"',wing:'78⅝"',dnp:true,dnpNote:"Did not participate in on-field drills"},
+  "CJ Allen":{ht:"6-0¾",wt:230,hand:'10⅛"',arm:'31½"',wing:'75½"',dnp:true,dnpNote:"Did not participate in on-field drills"},
+  "Caleb Banks":{ht:"6-6¼",wt:327,hand:'10⅞"',arm:'35"',wing:'85¾"',forty:"5.05",vert:'32"',broad:"9'6\""},
+  "Anthony Hill Jr.":{ht:"6-2",wt:238,hand:'9⅝"',arm:'32⅜"',wing:'79"',forty:"4.51",split:"1.58",vert:'37"',broad:"10'5\""},
+  "Cashius Howell":{ht:"6-2½",wt:253,hand:'9¼"',arm:'30¼"',wing:'74¼"',forty:"4.59",split:"1.58",vert:'32.5"',broad:"9'7\""},
+  "T.J. Parker":{ht:"6-3½",wt:263,hand:'9½"',arm:'33⅛"',wing:'79"',forty:"4.68",split:"1.61",vert:'34"',broad:"10'0\""},
+  "Lee Hunter":{ht:"6-3½",wt:318,hand:'9¼"',arm:'33¼"',wing:'80⅝"',forty:"5.18",vert:'21.5"',broad:"8'4\""},
+  "R Mason Thomas":{ht:"6-2¼",wt:241,hand:'8⅞"',arm:'31⅝"',wing:'78⅛"',forty:"4.67",split:"1.63"}
+};
+function combineHtml(name){
+  const c=combineData[name];if(!c)return'';
+  const meas=[{v:c.ht,l:'Height'},{v:c.wt+'',l:'Weight'},{v:c.hand,l:'Hand'},{v:c.arm,l:'Arm Length'},{v:c.wing,l:'Wingspan'}];
+  const tests=[];
+  if(c.forty)tests.push({v:c.forty,l:'40-Yard Dash'});
+  if(c.split)tests.push({v:c.split,l:'10-Yd Split'});
+  if(c.vert)tests.push({v:c.vert,l:'Vertical'});
+  if(c.broad)tests.push({v:c.broad,l:'Broad Jump'});
+  if(c.threeCone)tests.push({v:c.threeCone,l:'3-Cone'});
+  if(c.shuttle)tests.push({v:c.shuttle,l:'Shuttle'});
+  if(c.bench)tests.push({v:c.bench+'',l:'Bench Reps'});
+  const measGrid='<div class="combine-grid">'+meas.map(function(i){return'<div class="combine-item"><div class="combine-val">'+i.v+'</div><div class="combine-lbl">'+i.l+'</div></div>'}).join('')+'</div>';
+  const testBlock=c.dnp?'<div class="combine-dnp">'+c.dnpNote+'</div>':(tests.length?'<div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:14px 0 6px">On-Field Testing</div><div class="combine-grid">'+tests.map(function(i){return'<div class="combine-item"><div class="combine-val">'+i.v+'</div><div class="combine-lbl">'+i.l+'</div></div>'}).join('')+'</div>':'<div class="combine-dnp">On-field workout not yet scheduled</div>');
+  return'<div class="detail-section"><h3>🟢 Combine Measurables <span class="combine-fresh">FRESH</span> <span style="font-size:11px;font-weight:400;color:var(--muted)">Indianapolis · Feb 27–Mar 2, 2026</span></h3>'+measGrid+testBlock+'</div>';
+}
 function djTakeHtml(name){const pr=profiles[name];if(!pr||!pr.djNote)return'';return'<div class="detail-section"><h3>🎙️ DJ\'s Take <span style="font-size:11px;font-weight:400;color:var(--muted)">Daniel Jeremiah — DJ\'s Top 50 #'+pr.djRank+'</span></h3><p style="font-size:14px;line-height:1.75;color:var(--muted)">'+pr.djNote+'</p><div style="font-size:11px;color:var(--muted);text-align:right;border-top:1px solid var(--border);padding-top:8px;margin-top:8px">Sourced from <a href="https://www.nfl.com/news/daniel-jeremiah-s-top-50-2026-nfl-draft-prospect-rankings-2-0" target="_blank" style="color:var(--muted);text-decoration:underline">Daniel Jeremiah\'s Top 50 (NFL.com)</a></div></div>';}
 function headshot(p){const pr=profiles[p.name];const nflUrl=pr&&pr.nflUrl?pr.nflUrl:null;if(!nflUrl)return detailLogoFallback(p.school);const pid=nflUrl.split('/').pop();const url1='https://static.www.nfl.com/image/private/f_auto,q_85/league/god-prospect-headshots/2023/'+pid;return '<img src="'+url1+'" class="detail-logo-hs" data-pid="'+pid+'" data-school="'+p.school+'" alt="'+p.name+' headshot" onerror="hsError(this)">';}
 function gradeColor(g){if(g>=7.0)return'#fff';if(g>=6.7)return'#ccc';if(g>=6.5)return'#aaa';if(g>=6.0)return'#888';return'#666'}
@@ -311,6 +351,7 @@ function renderBoard(){
   html+=`<th style="width:50px;cursor:pointer;user-select:none" onclick="toggleSort('rank')">RK${sortIcon('rank')}</th>`;
   html+='<th>PLAYER</th>';
   html+='<th class="col-dj" style="font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted)">🎙️ DJ\'S TAKE</th>';
+  html+='<th class="col-combine" title="Combine data available">🟢</th>';
   html+=`<th class="col-nfl" style="white-space:nowrap;cursor:pointer;user-select:none;color:var(--muted);font-size:11px;font-weight:600" onclick="toggleSort('nfl')">NFL${sortIcon('nfl')} <a href="#grade-key" class="grade-info-btn" style="font-size:10px" onclick="event.stopPropagation()">ⓘ</a></th>`;
   html+='<th class="col-htwt" style="white-space:nowrap">HT/WT</th>';
   
@@ -324,6 +365,7 @@ function renderBoard(){
     html+=`<td style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:${isActive?'#fff':'#555'};width:48px;text-align:center;padding:14px 12px">${p.rank}</td>`;
     html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div></div></div></td>`;
     html+=`<td class="col-dj">${pr&&pr.djNote?pr.djNote:''}</td>`;
+    html+=`<td class="col-combine">${combineData[p.name]?'<span class="combine-dot" title="Combine data available">🟢</span>':''}</td>`;
     html+=`<td class="col-nfl measurables">${pr&&pr.nflGrade?`<span class="nfl-grade-badge" style="color:${gradeColor(pr.nflGrade)};border-color:${gradeColor(pr.nflGrade)}">${pr.nflGrade.toFixed(2)}</span>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>`;
     html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
     
@@ -423,6 +465,7 @@ function showDetail(rank){
     <div class="detail-measurables" style="margin-top:-12px">
       ${statsHtml}
     </div>
+    ${combineHtml(p.name)}
     <div class="detail-section"><h3>🎬 Highlights</h3><a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" class="yt-link">▶ Watch ${p.name} Highlights on YouTube</a></div>
     ${djTakeHtml(p.name)}
     ${renderProfile(p.name)}
