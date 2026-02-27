@@ -95,7 +95,7 @@ body.board-wide .col-dj{display:table-cell}
 .stat-label{display:none;font-size:9px;color:var(--muted);text-transform:uppercase}
 
 /* Detail Panel */
-.detail-panel{width:0;overflow:hidden;transition:width .3s ease,opacity .2s;background:linear-gradient(180deg,#131d29 0%,var(--bg) 100%);border-left:1px solid var(--border);opacity:0;flex-shrink:0;position:relative;display:flex;flex-direction:row}
+.detail-panel{width:0;overflow:hidden;transition:width .3s ease,opacity .2s;background:var(--bg);border-left:1px solid var(--border);opacity:0;flex-shrink:0;position:relative;display:flex;flex-direction:row}
 .detail-panel.open{width:560px;opacity:1;max-width:1100px}
 .detail-scroll{flex:1;overflow-y:auto;min-width:0}
 .detail-panel.resizing{transition:none;user-select:none}
@@ -104,7 +104,7 @@ body.board-wide .col-dj{display:table-cell}
 .detail-panel.fullscreen{position:fixed!important;top:0;left:0;width:100%!important;height:100vh;z-index:200;border-left:none}
 .detail-inner{padding:24px;min-width:560px;font-size:var(--detail-font,14px)}
 .detail-panel.fullscreen .detail-inner{max-width:1400px;width:92%;margin:0 auto;min-width:auto}
-.detail-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;position:sticky;top:0;z-index:20;background:#131d29;padding:12px 0 10px;margin-top:-12px}
+.detail-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;position:sticky;top:0;z-index:20;background:var(--bg);padding:12px 0 10px;margin-top:-12px}
 .detail-toolbar-left{display:flex;align-items:center;gap:12px}
 .detail-toolbar-right{display:flex;align-items:center;gap:10px}
 .detail-close{display:flex;align-items:center;gap:6px;color:var(--muted);cursor:pointer;font-size:13px;transition:.2s}
@@ -138,20 +138,20 @@ body.board-wide .col-dj{display:table-cell}
 .stat-box-val{font-size:20px;font-weight:700;color:var(--accent)}
 .stat-box-label{font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px}
 .scouting-notes{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:var(--detail-font,14px);color:var(--muted);line-height:1.6;font-style:italic}
-.yt-link{display:flex;align-items:center;gap:8px;background:#1a1a2a;border:1px solid #2a2a4a;border-radius:8px;padding:12px;color:#ff4444;font-size:13px;font-weight:500;transition:.2s}
-.yt-link:hover{background:#2a1a2a;text-decoration:none;border-color:#ff4444}
+.yt-link{display:flex;align-items:center;gap:8px;background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:12px;color:#ff4444;font-size:13px;font-weight:500;transition:.2s}
+.yt-link:hover{background:#1e1e1e;text-decoration:none;border-color:#ff4444}
 .source-links{display:flex;flex-direction:column;gap:6px}
 .source-link{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:6px;font-size:12px;transition:.2s}
 .source-link:hover{border-color:var(--accent);text-decoration:none}
 
-.school-group-header{padding:12px 16px;background:#131d29;font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.3px;border-bottom:1px solid var(--border);position:sticky;top:38px;z-index:5}
+.school-group-header{padding:12px 16px;background:var(--bg);font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.3px;border-bottom:1px solid var(--border);position:sticky;top:38px;z-index:5}
 .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
 
 /* ── Detail Panel Design Pass ────────────────────────── */
 @keyframes panelReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* Richer atmospheric background */
-.detail-panel{background:linear-gradient(150deg,#0d1922 0%,#111b27 50%,#0a1520 100%)!important}
+.detail-panel{background:var(--bg)!important}
 
 /* Player name — NYT editorial serif */
 .detail-name{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;letter-spacing:-.3px;line-height:1.1;color:#fff;font-style:italic}
