@@ -319,7 +319,7 @@ function renderBoard(){
     html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
     html+=`<td style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:${isActive?'#fff':'#555'};width:48px;text-align:center;padding:14px 12px">${p.rank}</td>`;
     html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div></div></div></td>`;
-    html+=`<td class="col-nfl measurables">${pr&&pr.nflGrade?`<span class="nfl-grade-badge" style="color:${gradeColor(p.nflGrade)};border-color:${gradeColor(p.nflGrade)}">${p.nflGrade.toFixed(2)}</span>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>`;
+    html+=`<td class="col-nfl measurables">${pr&&pr.nflGrade?`<span class="nfl-grade-badge" style="color:${gradeColor(pr.nflGrade)};border-color:${gradeColor(pr.nflGrade)}">${pr.nflGrade.toFixed(2)}</span>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>`;
     html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
     
     html+='</tr>';
