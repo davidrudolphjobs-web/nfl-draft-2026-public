@@ -439,10 +439,12 @@ function showDetail(rank){
 let detailFontSize=parseInt(localStorage.getItem('draftFontSize'))||14;
 let isFullscreen=false;
 
-const fontSteps=[12,14,16,18,20,22,24,26,28];
+const fontSteps=[12,14,16,18,20,22,24,26,28,30,32,34,36,40];
 function applyFontSize(){
   document.documentElement.style.setProperty('--detail-font',detailFontSize+'px');
   localStorage.setItem('draftFontSize',detailFontSize);
+  const panel=document.getElementById('detailPanel');
+  if(panel){const w=Math.round(480+(detailFontSize-12)*22);panel.style.width=w+'px';panel.style.minWidth=w+'px';}
   const dots=document.getElementById('fontDots');
   if(!dots)return;
   const idx=fontSteps.indexOf(detailFontSize);
