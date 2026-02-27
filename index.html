@@ -5,41 +5,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2026 NFL Draft Big Board</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏈</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,500;1,700&family=Libre+Franklin:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0e1621;--card:#182533;--border:#1e2c3a;--accent:#5ea5d6;--text:#f5f5f5;--muted:#708499;--hover:#1d2f40;--green:#4caf50;--red:#ef5350;--yellow:#ffc107;--orange:#ff9800}
+:root{--bg:#0a0a0a;--card:#111;--border:#2a2a2a;--border-light:#1a1a1a;--accent:#fff;--text:#f0f0f0;--muted:#777;--muted2:#555;--hover:#0f0f0f;--selected:#141414;--green:#4caf50;--red:#ef5350;--yellow:#ffc107;--orange:#ff9800}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-.header{background:linear-gradient(135deg,#0f1923 0%,#162230 100%);border-bottom:1px solid var(--border);padding:20px 30px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.header-left{display:flex;align-items:center;gap:16px}
-.back-link{color:var(--muted);font-size:13px;display:flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid var(--border);border-radius:6px;transition:.2s}
+.header{background:var(--bg);border-bottom:3px solid #fff;padding:32px 30px 20px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header-left{display:flex;flex-direction:column;gap:4px}
+.back-link{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid var(--border);transition:.2s;font-family:'JetBrains Mono',monospace;letter-spacing:1px}
 .back-link:hover{color:var(--accent);border-color:var(--accent);text-decoration:none}
-.header h1{font-size:24px;font-weight:800;letter-spacing:-0.5px}
-.header h1 span{color:var(--accent)}
-.header-sub{color:var(--muted);font-size:13px;font-weight:400}
-.combine-badge{background:linear-gradient(135deg,#1a3a2a,#1a2a1a);border:1px solid #2a5a3a;padding:8px 16px;border-radius:8px;font-size:12px;color:#4caf50;font-weight:500}
+.header-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#666;margin:0 0 6px 0}
+.header h1{font-family:'Playfair Display',Georgia,serif;font-size:42px;font-weight:900;letter-spacing:-1px;line-height:1;margin:0}
+.header h1 span{font-style:italic;font-weight:400}
+.header-sub{display:none}
+.header-right{text-align:right}
+.combine-badge{display:inline-flex;flex-direction:column;align-items:flex-end;gap:2px}
+.combine-badge-date{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--text)}
+.combine-badge-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#555;border:1px solid #333;padding:2px 8px}
 
-.controls{padding:16px 30px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;border-bottom:1px solid var(--border);background:rgba(14,22,33,.6)}
-.search-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;width:220px;outline:none;transition:.2s}
-.search-box:focus{border-color:var(--accent)}
-.search-box::placeholder{color:var(--muted)}
-.tab-group{display:flex;background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
-.tab-btn{padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);border:none;font-family:'Inter',sans-serif;transition:.2s;letter-spacing:.5px}
-.tab-btn.active{background:var(--accent);color:#fff}
-.pill-group{display:flex;flex-wrap:wrap;gap:6px}
-.pill{padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:20px;font-family:'Inter',sans-serif;transition:.2s;letter-spacing:.5px}
-.pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.pill:hover:not(.active){border-color:var(--accent);color:var(--accent)}
+.controls{padding:14px 30px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;border-bottom:1px solid var(--border);background:var(--bg)}
+.search-box{background:transparent;border:1px solid #333;padding:8px 14px;color:var(--text);font-size:13px;font-family:'Libre Franklin',sans-serif;width:220px;outline:none;transition:.2s}
+.search-box:focus{border-color:#666}
+.search-box::placeholder{color:#555}
+.tab-group{display:flex;background:transparent;overflow:hidden}
+.tab-btn{padding:7px 16px;font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);border:1px solid #333;border-right:none;font-family:'JetBrains Mono',monospace;transition:.15s;letter-spacing:1px}
+.tab-btn:last-child{border-right:1px solid #333}
+.tab-btn.active{background:#fff;color:#000;border-color:#fff}
+.tab-btn:hover:not(.active){color:#fff}
+.pill-group{display:flex;flex-wrap:wrap;gap:0}
+.pill{padding:6px 13px;font-size:10px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);border:1px solid #333;border-right:none;font-family:'JetBrains Mono',monospace;transition:.15s;letter-spacing:1px}
+.pill:last-child{border-right:1px solid #333}
+.pill.active{background:#fff;color:#000;border-color:#fff}
+.pill:hover:not(.active){color:#fff}
 
 .main-content{display:flex;height:calc(100vh - 145px);overflow:hidden}
 .board{flex:1;overflow-y:auto;padding:0}
 .board.shrunk{margin-right:0}
 
 table{width:100%;border-collapse:collapse}
-thead{position:sticky;top:0;z-index:10}
+thead{position:sticky;top:0;z-index:10;border-bottom:2px solid #fff}
 thead th{background:#131d29;padding:10px 12px;font-size:11px;font-weight:600;color:var(--muted);text-align:left;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid var(--border);white-space:nowrap;user-select:none;transition:.2s}
 thead th:hover{color:var(--accent)}
 thead th.sorted-asc::after{content:' ▲';color:var(--accent)}
@@ -308,9 +315,9 @@ function renderBoard(){
     const pr=profiles[p.name];
     
     html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
-    html+=`<td class="rank-cell${p.rank<=5?' top5':''}">${p.rank}</td>`;
+    html+=`<td style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:${isActive?'#fff':'#555'};width:48px;text-align:center;padding:14px 12px">${p.rank}</td>`;
     html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div></div></div></td>`;
-    html+=`<td class="col-nfl measurables">${pr&&pr.nflGrade?`<span class="nfl-grade-badge" style="margin:0">${pr.nflGrade.toFixed(2)}</span>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>`;
+    html+=`<td class="col-nfl measurables">${pr&&pr.nflGrade?`<span class="nfl-grade-badge" style="color:${gradeColor(p.nflGrade)};border-color:${gradeColor(p.nflGrade)}">${p.nflGrade.toFixed(2)}</span>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>`;
     html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
     
     html+='</tr>';
@@ -335,7 +342,7 @@ function renderBySchool(list){
       const pr=profiles[p.name];
       
       html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
-      html+=`<td class="rank-cell${p.rank<=5?' top5':''}">${p.rank}</td>`;
+      html+=`<td style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:${isActive?'#fff':'#555'};width:48px;text-align:center;padding:14px 12px">${p.rank}</td>`;
       const gb2=pr&&pr.nflGrade?`<span class="nfl-grade-badge">NFL ${pr.nflGrade.toFixed(2)} <a href="#grade-key" class="grade-info-btn" onclick="event.stopPropagation()">ⓘ</a></span>`:'';
       html+=`<td><div class="player-info"><div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.conf}</div>${gb2}</div></div></td>`;
       html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
