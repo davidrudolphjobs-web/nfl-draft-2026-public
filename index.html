@@ -153,22 +153,22 @@ body.board-wide .col-dj{display:table-cell}
 /* Richer atmospheric background */
 .detail-panel{background:linear-gradient(150deg,#0d1922 0%,#111b27 50%,#0a1520 100%)!important}
 
-/* Player name — broadcast display font */
-.detail-name{font-family:'Bebas Neue',sans-serif;font-size:42px;font-weight:400;letter-spacing:1.5px;line-height:1;color:#fff}
+/* Player name — NYT editorial serif */
+.detail-name{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;letter-spacing:-.3px;line-height:1.1;color:#fff;font-style:italic}
 
 /* Detail header meta */
-.detail-pos{font-size:13px;color:var(--muted);margin-top:4px;letter-spacing:.2px}
+.detail-pos{font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:.1px;font-family:'Libre Franklin','Helvetica Neue',sans-serif}
 
-/* Player headshot — subtle accent glow */
-.detail-logo,.detail-logo-hs{border:2px solid var(--accent);box-shadow:0 0 16px rgba(94,165,214,.2)}
+/* Player headshot — clean border, no glow */
+.detail-logo,.detail-logo-hs{border:2px solid rgba(255,255,255,.15)}
 
 /* Header + measurables animate in */
 .detail-header{animation:panelReveal .3s ease both}
 .detail-measurables{animation:panelReveal .3s .06s ease both;opacity:0}
 
-/* Measurable values — broadcast numbers */
-.detail-meas-val{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.5px;color:#fff}
-.detail-meas-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:3px}
+/* Measurable values — clean editorial numbers */
+.detail-meas-val{font-family:'Libre Franklin','Helvetica Neue',sans-serif;font-size:24px;font-weight:700;letter-spacing:-.3px;color:#fff}
+.detail-meas-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-family:'Libre Franklin',sans-serif;font-weight:500}
 
 /* Sections — staggered entrance */
 .detail-section{animation:panelReveal .35s ease both;opacity:0;margin-bottom:28px}
@@ -183,17 +183,17 @@ body.board-wide .col-dj{display:table-cell}
 .detail-section:nth-child(9){animation-delay:.45s}
 .detail-section:nth-child(10){animation-delay:.5s}
 
-/* Section headers — accent left bar */
-.detail-section h3{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:14px;padding:0 0 8px 10px;border-bottom:1px solid var(--border);border-left:3px solid var(--accent);display:flex;align-items:center;gap:6px}
+/* Section headers — NYT editorial rule style */
+.detail-section h3{font-family:'Libre Franklin','Helvetica Neue',sans-serif;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);border-left:none;display:flex;align-items:center;gap:6px}
 
-/* Combine numbers — broadcast scale */
-.combine-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.5px;color:#fff;line-height:1}
+/* Combine numbers — editorial scale */
+.combine-val{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#fff;line-height:1;font-style:normal}
 
 /* Season stat boxes */
-.stat-box-val{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.5px}
+.stat-box-val{font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700}
 
-/* NFL comparison name */
-.detail-section [style*="font-size:20px;font-weight:700"]{font-family:'Bebas Neue',sans-serif!important;font-size:28px!important;letter-spacing:1px!important}
+/* NFL comparison name — Playfair */
+.detail-section [style*="font-size:20px;font-weight:700"]{font-family:'Playfair Display',serif!important;font-size:26px!important;letter-spacing:-.3px!important;font-style:italic!important}
 
 @media(max-width:768px){
   /* Header */
@@ -240,7 +240,7 @@ body.board-wide .col-dj{display:table-cell}
   .detail-btn{display:none}
 
   /* Detail header */
-  .detail-name{font-size:28px;letter-spacing:1px}
+  .detail-name{font-size:26px;letter-spacing:-.2px}
   .detail-measurables{gap:12px}
   .detail-meas-val{font-size:16px}
 }
