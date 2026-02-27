@@ -236,6 +236,7 @@ function logoHtml(school,size=32){const url=logoUrl(school);if(url)return`<img s
 function fallbackLogo(school,size=32){const initials=school.split(' ').map(w=>w[0]).join('').slice(0,2);return`<div class="school-logo-fallback" style="width:${size}px;height:${size}px;font-size:${size*.35}px">${initials}</div>`}
 function detailLogoFallback(school){return logoHtml(school,64).replace('school-logo"','detail-logo"').replace('school-logo-fallback"','detail-logo-fallback"')}
 function hsError(img){var pid=img.getAttribute('data-pid');var school=img.getAttribute('data-school');if(img.src.includes('prospect-headshots')){img.src='https://static.www.nfl.com/image/private/f_auto,q_85/league/god-draft-headshots/2026/'+pid;}else{img.outerHTML=detailLogoFallback(school);}}
+function djTakeHtml(name){const pr=profiles[name];if(!pr||!pr.djNote)return'';return'<div class="detail-section"><h3>🎙️ DJ\'s Take <span style="font-size:11px;font-weight:400;color:var(--muted)">Daniel Jeremiah — DJ\'s Top 50 #'+pr.djRank+'</span></h3><p style="font-size:14px;line-height:1.75;color:var(--muted)">'+pr.djNote+'</p><div style="font-size:11px;color:var(--muted);text-align:right;border-top:1px solid var(--border);padding-top:8px;margin-top:8px">Sourced from <a href="https://www.nfl.com/news/daniel-jeremiah-s-top-50-2026-nfl-draft-prospect-rankings-2-0" target="_blank" style="color:var(--muted);text-decoration:underline">Daniel Jeremiah\'s Top 50 (NFL.com)</a></div></div>';}
 function headshot(p){const pr=profiles[p.name];const nflUrl=pr&&pr.nflUrl?pr.nflUrl:null;if(!nflUrl)return detailLogoFallback(p.school);const pid=nflUrl.split('/').pop();const url1='https://static.www.nfl.com/image/private/f_auto,q_85/league/god-prospect-headshots/2023/'+pid;return '<img src="'+url1+'" class="detail-logo-hs" data-pid="'+pid+'" data-school="'+p.school+'" alt="'+p.name+' headshot" onerror="hsError(this)">';}
 function nameSlug(name){return name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-+$/,'')}
 function buzzSlug(p){
@@ -360,7 +361,6 @@ function renderProfile(name){
   if(pr.background){h+='<div class="detail-section"><h3>📋 Background</h3><div style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--text)">'+pr.background+'</div></div>'}
   if(pr.funFacts&&pr.funFacts.length){h+='<div class="detail-section"><h3>🎯 Fun Facts</h3><ul style="font-size:var(--detail-font,14px);line-height:1.7;color:var(--muted);padding-left:18px">'+pr.funFacts.map(function(f){return '<li style="margin-bottom:6px">'+f+'</li>'}).join('')+'</ul></div>'}
   if(pr.ringerRank||pr.strengths||pr.funFacts){h+='<div style="font-size:11px;color:var(--muted);text-align:right;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;margin-bottom:4px">Sourced from <a href="https://www.theringer.com/nfl-draft/2026/big-board" target="_blank" style="color:var(--muted);text-decoration:underline">The Ringer\'s 2026 NFL Draft Guide</a></div>'}
-  if(pr.djNote){h+='<div class="detail-section"><h3>🎙️ DJ\'s Take <span style="font-size:11px;font-weight:400;color:var(--muted)">Daniel Jeremiah — DJ\'s Top 50 #'+pr.djRank+'</span></h3><p style="font-size:var(--detail-font,14px);line-height:1.75;color:var(--muted)">'+pr.djNote+'</p><div style="font-size:11px;color:var(--muted);text-align:right;border-top:1px solid var(--border);padding-top:8px;margin-top:8px">Sourced from <a href="https://www.nfl.com/news/daniel-jeremiah-s-top-50-2026-nfl-draft-prospect-rankings-2-0" target="_blank" style="color:var(--muted);text-decoration:underline">Daniel Jeremiah\'s Top 50 (NFL.com)</a></div></div>'}
   if(pr.nflUrl){h+='<div class="detail-section"><h3 style="display:flex;align-items:center;gap:8px">🏈 NFL.com Profile'+(pr.nflGrade?'<span class="nfl-grade-badge" style="font-size:12px;padding:2px 8px">'+pr.nflGrade.toFixed(2)+' <a href="#grade-key" class="grade-info-btn" style="font-size:11px">ⓘ</a></span>':'')+'</h3><a href="'+pr.nflUrl+'" target="_blank" class="yt-link" style="color:var(--accent)">View full prospect profile on NFL.com →</a></div>'}
   
   else if(!pr.strengths){h+='<div class="detail-section"><h3>Scouting Report</h3><div class="scouting-notes">Scouting report coming soon. Check back after the NFL Combine (Feb 27 – Mar 2, 2026) for updated evaluations and measurables.</div></div>'}
@@ -409,6 +409,7 @@ function showDetail(rank){
       ${statsHtml}
     </div>
     <div class="detail-section"><h3>🎬 Highlights</h3><a href="https://www.youtube.com/results?search_query=${ytQuery}" target="_blank" class="yt-link">▶ Watch ${p.name} Highlights on YouTube</a></div>
+    ${djTakeHtml(p.name)}
     ${renderProfile(p.name)}
     <div class="detail-section"><h3>📋 Source Profiles</h3><div class="source-links">
       
