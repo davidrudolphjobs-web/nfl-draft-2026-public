@@ -257,7 +257,7 @@ body.board-wide .col-dj{display:table-cell}
       <div class="header-sub">Rankings sourced from <a href="https://www.tankathon.com/nfl/big_board" target="_blank" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px">Tankathon Big Board</a></div>
     </div>
   </div>
-  <div class="combine-badge">NFL Combine: Feb 27 – Mar 2, 2026 — 🟢 Live results updating</div>
+  <div class="combine-badge">NFL Combine: Feb 26 – Mar 2, 2026 — 🟢 Live results updating</div>
 </div>
 
 <div class="controls">
@@ -459,7 +459,7 @@ function renderBySchool(list){
 
 function renderProfile(name){
   const pr=profiles[name];
-  if(!pr)return '<div class="detail-section"><h3>Scouting Report</h3><div class="scouting-notes">Scouting report coming soon. Check back after the NFL Combine (Feb 27 – Mar 2, 2026) for updated evaluations and measurables.</div></div>';
+  if(!pr)return '<div class="detail-section"><h3>Scouting Report</h3><div class="scouting-notes">Scouting report coming soon. Check back after the NFL Combine (Feb 26 – Mar 2, 2026) for updated evaluations and measurables.</div></div>';
   let h='';
   if(pr.nflComp){h+='<div class="detail-section"><h3>NFL Comparison</h3><div style="font-size:20px;font-weight:700;color:var(--accent);margin-bottom:4px">Shades of '+pr.nflComp+'</div>'+(pr.tagline?'<div style="font-size:14px;color:var(--text);margin-top:8px;font-style:italic">'+pr.tagline+'</div>':'')+(pr.ringerRank?'<div style="font-size:12px;color:var(--muted);margin-top:6px">The Ringer Big Board: #'+pr.ringerRank+'</div>':'')+(pr.age?'<div style="font-size:12px;color:var(--muted)">Age: '+pr.age+' · '+(pr.class||'')+'</div>':'')+'</div>'}
   if(pr.traits&&pr.traits.length){h+='<div class="detail-section"><div style="display:flex;flex-wrap:wrap;gap:8px">'+pr.traits.map(function(t){return '<span style="background:rgba(94,165,214,.15);color:var(--accent);padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600">'+t+'</span>'}).join('')+'</div></div>'}
@@ -471,7 +471,7 @@ function renderProfile(name){
   if(pr.ringerRank||pr.strengths||pr.funFacts){h+='<div style="font-size:11px;color:var(--muted);text-align:right;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;margin-bottom:4px">Sourced from <a href="https://www.theringer.com/nfl-draft/2026/big-board" target="_blank" style="color:var(--muted);text-decoration:underline">The Ringer\'s 2026 NFL Draft Guide</a></div>'}
   if(pr.nflUrl){h+='<div class="detail-section"><h3 style="display:flex;align-items:center;gap:8px">🏈 NFL.com Profile'+(pr.nflGrade?'<span class="nfl-grade-badge" style="font-size:12px;padding:2px 8px">'+pr.nflGrade.toFixed(2)+' <a href="#grade-key" class="grade-info-btn" style="font-size:11px">ⓘ</a></span>':'')+'</h3><a href="'+pr.nflUrl+'" target="_blank" class="yt-link" style="color:var(--accent)">View full prospect profile on NFL.com →</a></div>'}
   
-  else if(!pr.strengths){h+='<div class="detail-section"><h3>Scouting Report</h3><div class="scouting-notes">Scouting report coming soon. Check back after the NFL Combine (Feb 27 – Mar 2, 2026) for updated evaluations and measurables.</div></div>'}
+  else if(!pr.strengths){h+='<div class="detail-section"><h3>Scouting Report</h3><div class="scouting-notes">Scouting report coming soon. Check back after the NFL Combine (Feb 26 – Mar 2, 2026) for updated evaluations and measurables.</div></div>'}
   return h;
 }
 
