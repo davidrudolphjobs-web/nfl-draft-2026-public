@@ -248,7 +248,7 @@ const prospects=[{rank:1,name:"Arvell Reese",pos:"LB",school:"Ohio State",height
 
 const espnIds={"Ohio State":194,"Miami":2390,"Indiana":84,"Texas Tech":2641,"Utah":254,"Notre Dame":87,"Arizona State":9,"LSU":99,"USC":30,"Tennessee":2633,"Auburn":2,"Clemson":228,"Oregon":2483,"Penn State":213,"Washington":264,"Texas A&M":245,"Alabama":333,"Georgia":61,"Florida":57,"South Carolina":2579,"Toledo":2649,"Texas":251,"Oklahoma":201,"Louisville":97};
 
-const logoOverrides={"Ohio State":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Ohio_State_Buckeyes_logo.svg/250px-Ohio_State_Buckeyes_logo.svg.png"};
+const logoOverrides={"Ohio State":"https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500-dark/194.png&h=64&w=64"};
 function logoUrl(school){if(logoOverrides[school])return logoOverrides[school];const id=espnIds[school];return id?`https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/${id}.png&h=40&w=40`:null}
 function logoHtml(school,size=32){const url=logoUrl(school);if(url)return`<img src="${url}" class="school-logo" style="width:${size}px;height:${size}px" alt="${school}" onerror="this.outerHTML=fallbackLogo('${school}',${size})">`;return fallbackLogo(school,size)}
 function fallbackLogo(school,size=32){const initials=school.split(' ').map(w=>w[0]).join('').slice(0,2);return`<div class="school-logo-fallback" style="width:${size}px;height:${size}px;font-size:${size*.35}px">${initials}</div>`}
