@@ -367,7 +367,7 @@ function renderBoard(){
     html+=`<td class="col-dj">${pr&&pr.djNote?pr.djNote:''}</td>`;
     html+=`<td class="col-combine">${combineData[p.name]?'<span class="combine-dot" title="Combine data available">🟢</span>':''}</td>`;
     html+=`<td class="col-nfl measurables">${pr&&pr.nflGrade?`<span class="nfl-grade-badge" style="color:${gradeColor(pr.nflGrade)};border-color:${gradeColor(pr.nflGrade)}">${pr.nflGrade.toFixed(2)}</span>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>`;
-    html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
+    const _c=combineData[p.name];html+=`<td class="measurables col-htwt">${(_c?_c.ht:p.height)} / ${(_c?_c.wt:p.weight)} lbs</td>`;
     
     html+='</tr>';
   });
@@ -395,7 +395,7 @@ function renderBySchool(list){
       html+=`<td style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:${isActive?'#fff':'#555'};width:48px;text-align:center;padding:14px 12px">${p.rank}</td>`;
       const gb2=pr&&pr.nflGrade?`<span class="nfl-grade-badge">NFL ${pr.nflGrade.toFixed(2)} <a href="#grade-key" class="grade-info-btn" onclick="event.stopPropagation()">ⓘ</a></span>`:'';
       html+=`<td><div class="player-info"><div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.conf}</div>${gb2}</div></div></td>`;
-      html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
+      const _c2=combineData[p.name];html+=`<td class="measurables col-htwt">${(_c2?_c2.ht:p.height)} / ${(_c2?_c2.wt:p.weight)} lbs</td>`;
       
       html+='</tr>';
     });
