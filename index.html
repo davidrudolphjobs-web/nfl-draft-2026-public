@@ -251,7 +251,8 @@ function nameSlug(name){return name.toLowerCase().replace(/[^a-z0-9]+/g,'-').rep
 function buzzSlug(p){
   const parts=p.name.replace(/\./g,'').split(' ');
   const name=parts.join('-');
-  const school=p.school.replace(/[^a-zA-Z0-9]/g,'');
+  const schoolOverrides={'David Bailey':'Stanford'};
+  const school=(schoolOverrides[p.name]||p.school).replace(/[^a-zA-Z0-9]/g,'');
   const posMap={'EDGE':'DE','IOL':'G','DL':'DT'};
   const pos=posMap[p.pos]||p.pos;
   return name+'-'+pos+'-'+school;
