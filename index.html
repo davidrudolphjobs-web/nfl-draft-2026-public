@@ -80,6 +80,8 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .pos-DL{background:#3a1a1a;color:#ff5252}.pos-EDGE{background:#3a1a2a;color:#ff4081}
 .pos-LB{background:#1a3a3a;color:#64ffda}.pos-CB{background:#1a1a3a;color:#8c9eff}.pos-S{background:#2a1a2a;color:#ea80fc}
 .measurables{white-space:nowrap;color:var(--muted);font-size:12px}
+.col-dj{display:none;color:var(--muted);font-size:13px;line-height:1.6;padding:10px 14px;vertical-align:middle}
+body.board-wide .col-dj{display:table-cell}
 .stat-cell{font-size:13px;font-variant-numeric:tabular-nums;text-align:right;min-width:55px}
 .stat-cell.highlight{color:var(--accent);font-weight:600}
 .stat-label{display:none;font-size:9px;color:var(--muted);text-transform:uppercase}
@@ -308,6 +310,7 @@ function renderBoard(){
   let html='<table><thead><tr>';
   html+=`<th style="width:50px;cursor:pointer;user-select:none" onclick="toggleSort('rank')">RK${sortIcon('rank')}</th>`;
   html+='<th>PLAYER</th>';
+  html+='<th class="col-dj" style="font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted)">🎙️ DJ\'S TAKE</th>';
   html+=`<th class="col-nfl" style="white-space:nowrap;cursor:pointer;user-select:none;color:var(--muted);font-size:11px;font-weight:600" onclick="toggleSort('nfl')">NFL${sortIcon('nfl')} <a href="#grade-key" class="grade-info-btn" style="font-size:10px" onclick="event.stopPropagation()">ⓘ</a></th>`;
   html+='<th class="col-htwt" style="white-space:nowrap">HT/WT</th>';
   
@@ -320,6 +323,7 @@ function renderBoard(){
     html+=`<tr onclick="showDetail(${p.rank})" class="${isActive?'active-row':''}">`;
     html+=`<td style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:${isActive?'#fff':'#555'};width:48px;text-align:center;padding:14px 12px">${p.rank}</td>`;
     html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div></div></div></td>`;
+    html+=`<td class="col-dj">${pr&&pr.djNote?pr.djNote:''}</td>`;
     html+=`<td class="col-nfl measurables">${pr&&pr.nflGrade?`<span class="nfl-grade-badge" style="color:${gradeColor(pr.nflGrade)};border-color:${gradeColor(pr.nflGrade)}">${pr.nflGrade.toFixed(2)}</span>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>`;
     html+=`<td class="measurables col-htwt">${p.height} / ${p.weight} lbs</td>`;
     
@@ -328,6 +332,7 @@ function renderBoard(){
   html+='</tbody></table>';
   html+=gradeKeyHTML();
   board.innerHTML=html;
+  document.body.classList.toggle('board-wide',!activePlayer);
 }
 
 function gradeKeyHTML(){return `<div class="grade-key-section" id="grade-key"><h4>NFL.com Grade Scale <span style="font-weight:400;text-transform:none;letter-spacing:0">— what the numbers mean</span></h4><div class="grade-key-grid"><div class="grade-key-row"><span class="grade-key-range">8.0</span><span class="grade-key-desc">The perfect prospect</span></div><div class="grade-key-row"><span class="grade-key-range">7.3–7.5</span><span class="grade-key-desc">Perennial All-Pro</span></div><div class="grade-key-row"><span class="grade-key-range">7.0–7.1</span><span class="grade-key-desc">Pro Bowl talent</span></div><div class="grade-key-row"><span class="grade-key-range">6.7–6.9</span><span class="grade-key-desc">Year 1 starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.5–6.6</span><span class="grade-key-desc">Boom-or-bust potential</span></div><div class="grade-key-row"><span class="grade-key-range">6.40–6.49</span><span class="grade-key-desc">Will become good starter within two years</span></div><div class="grade-key-row"><span class="grade-key-range">6.30–6.39</span><span class="grade-key-desc">Will eventually be plus starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.20–6.29</span><span class="grade-key-desc">Will eventually be average starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.10–6.19</span><span class="grade-key-desc">Good backup with potential to develop into starter</span></div><div class="grade-key-row"><span class="grade-key-range">6.0–6.09</span><span class="grade-key-desc">Traits or talent to be above-average backup</span></div><div class="grade-key-row"><span class="grade-key-range">5.80–5.99</span><span class="grade-key-desc">Average backup or special-teamer</span></div><div class="grade-key-row"><span class="grade-key-range">5.60–5.69</span><span class="grade-key-desc">Candidate for bottom of roster or practice squad</span></div><div class="grade-key-row"><span class="grade-key-range">5.50–5.59</span><span class="grade-key-desc">Priority undrafted free agent</span></div><div class="grade-key-row"><span class="grade-key-range">No grade</span><span class="grade-key-desc">Grade not yet available</span></div></div><p class="grade-key-note">*Grades before 2014 were on a different grading system. Source: NFL.com</p></div>`;}
