@@ -545,6 +545,8 @@ function showDetail(rank){
 
 let detailFontSize=parseInt(localStorage.getItem('draftFontSize'))||16;
 let isFullscreen=false;
+let panelOriginalParent=null;
+let panelOriginalNextSibling=null;
 
 const fontSteps=[12,14,16,18,20,22,24,26,28,30,32,34,36,40];
 function applyFontSize(){
@@ -569,7 +571,18 @@ function toggleFullscreen(){
   const panel=document.getElementById('detailPanel');
   const btn=document.getElementById('fullscreenBtn');
   isFullscreen=!isFullscreen;
-  panel.classList.toggle('fullscreen',isFullscreen);
+  if(isFullscreen){
+    panelOriginalParent=panel.parentNode;
+    panelOriginalNextSibling=panel.nextSibling;
+    document.body.appendChild(panel);
+    panel.classList.add('fullscreen');
+  } else {
+    panel.classList.remove('fullscreen');
+    if(panelOriginalParent){
+      if(panelOriginalNextSibling)panelOriginalParent.insertBefore(panel,panelOriginalNextSibling);
+      else panelOriginalParent.appendChild(panel);
+    }
+  }
   if(btn)btn.innerHTML=isFullscreen?'↙ Exit Fullscreen':'⛶ Fullscreen';
   if(btn)btn.classList.toggle('active',isFullscreen);
 }
@@ -577,6 +590,11 @@ function toggleFullscreen(){
 function closeDetail(){
   activePlayer=null;
   const panel=document.getElementById('detailPanel');
+  if(isFullscreen&&panelOriginalParent){
+    panel.classList.remove('fullscreen');
+    if(panelOriginalNextSibling)panelOriginalParent.insertBefore(panel,panelOriginalNextSibling);
+    else panelOriginalParent.appendChild(panel);
+  }
   panel.classList.remove('open','fullscreen');
   isFullscreen=false;
   panel.style.width='';
