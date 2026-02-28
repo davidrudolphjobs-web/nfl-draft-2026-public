@@ -576,8 +576,16 @@ function toggleFullscreen(){
     panelOriginalNextSibling=panel.nextSibling;
     document.body.appendChild(panel);
     panel.classList.add('fullscreen');
+    panel.style.width=window.innerWidth+'px';
+    panel.style.height=window.innerHeight+'px';
+    panel.style.top='0';
+    panel.style.left='0';
   } else {
     panel.classList.remove('fullscreen');
+    panel.style.width='';
+    panel.style.height='';
+    panel.style.top='';
+    panel.style.left='';
     if(panelOriginalParent){
       if(panelOriginalNextSibling)panelOriginalParent.insertBefore(panel,panelOriginalNextSibling);
       else panelOriginalParent.appendChild(panel);
@@ -586,6 +594,13 @@ function toggleFullscreen(){
   if(btn)btn.innerHTML=isFullscreen?'↙ Exit Fullscreen':'⛶ Fullscreen';
   if(btn)btn.classList.toggle('active',isFullscreen);
 }
+window.addEventListener('resize',()=>{
+  if(isFullscreen){
+    const panel=document.getElementById('detailPanel');
+    panel.style.width=window.innerWidth+'px';
+    panel.style.height=window.innerHeight+'px';
+  }
+});
 
 function closeDetail(){
   activePlayer=null;
