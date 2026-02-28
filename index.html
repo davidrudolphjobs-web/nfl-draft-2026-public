@@ -99,7 +99,7 @@ body.board-wide .col-dj{display:table-cell}
 .detail-panel.resizing{transition:none;user-select:none}
 .drag-handle{position:absolute;left:0;top:0;width:6px;height:100%;cursor:col-resize;z-index:10;background:transparent;transition:background .2s}
 .drag-handle:hover,.drag-handle.active{background:var(--accent);opacity:.4}
-.detail-panel.fullscreen{position:fixed!important;top:0;left:0;right:0;bottom:0;width:100vw!important;height:100vh!important;z-index:9999;border-left:none;overflow:hidden}
+.detail-panel.fullscreen{position:fixed!important;top:0;left:0;right:0;bottom:0;width:100vw!important;height:100vh!important;max-width:none!important;z-index:9999;border-left:none;overflow:hidden}
 .detail-inner{padding:24px;min-width:560px;font-size:var(--detail-font,14px)}
 .detail-panel.fullscreen .detail-inner{max-width:1400px;width:92%;margin:0 auto;min-width:auto}
 .detail-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;position:sticky;top:0;z-index:20;background:var(--bg);padding:12px 0 10px;margin-top:-12px}
@@ -567,17 +567,25 @@ function adjustFont(dir){
   applyFontSize();
 }
 
+function getViewportSize(){
+  if(window.visualViewport) return {w:window.visualViewport.width,h:window.visualViewport.height};
+  return {w:document.documentElement.clientWidth||window.innerWidth,h:document.documentElement.clientHeight||window.innerHeight};
+}
 function toggleFullscreen(){
   const panel=document.getElementById('detailPanel');
   const btn=document.getElementById('fullscreenBtn');
   isFullscreen=!isFullscreen;
   if(isFullscreen){
+    window.scrollTo(0,0);
     panelOriginalParent=panel.parentNode;
     panelOriginalNextSibling=panel.nextSibling;
     document.body.appendChild(panel);
+    document.documentElement.style.overflow='hidden';
+    document.body.style.overflow='hidden';
     panel.classList.add('fullscreen');
-    panel.style.width=window.innerWidth+'px';
-    panel.style.height=window.innerHeight+'px';
+    const vp=getViewportSize();
+    panel.style.width=vp.w+'px';
+    panel.style.height=vp.h+'px';
     panel.style.top='0';
     panel.style.left='0';
   } else {
@@ -586,6 +594,8 @@ function toggleFullscreen(){
     panel.style.height='';
     panel.style.top='';
     panel.style.left='';
+    document.documentElement.style.overflow='';
+    document.body.style.overflow='';
     if(panelOriginalParent){
       if(panelOriginalNextSibling)panelOriginalParent.insertBefore(panel,panelOriginalNextSibling);
       else panelOriginalParent.appendChild(panel);
@@ -597,16 +607,28 @@ function toggleFullscreen(){
 window.addEventListener('resize',()=>{
   if(isFullscreen){
     const panel=document.getElementById('detailPanel');
-    panel.style.width=window.innerWidth+'px';
-    panel.style.height=window.innerHeight+'px';
+    const vp=getViewportSize();
+    panel.style.width=vp.w+'px';
+    panel.style.height=vp.h+'px';
   }
 });
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize',()=>{
+    if(isFullscreen){
+      const panel=document.getElementById('detailPanel');
+      panel.style.width=window.visualViewport.width+'px';
+      panel.style.height=window.visualViewport.height+'px';
+    }
+  });
+}
 
 function closeDetail(){
   activePlayer=null;
   const panel=document.getElementById('detailPanel');
   if(isFullscreen&&panelOriginalParent){
     panel.classList.remove('fullscreen');
+    document.documentElement.style.overflow='';
+    document.body.style.overflow='';
     if(panelOriginalNextSibling)panelOriginalParent.insertBefore(panel,panelOriginalNextSibling);
     else panelOriginalParent.appendChild(panel);
   }
