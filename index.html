@@ -221,7 +221,8 @@ body.board-wide .col-dj{display:table-cell}
   .col-htwt{display:none}
   .col-dj{display:none!important}
   .col-combine{display:none!important}
-  .col-nfl{width:60px;font-size:12px}
+  .col-nfl{width:76px;font-size:12px;padding-right:10px}
+  .player-cell{max-width:0;overflow:hidden}
 
   /* Player card layout */
   .rank-cell{font-size:14px;width:36px;padding:10px 6px}
@@ -230,9 +231,8 @@ body.board-wide .col-dj{display:table-cell}
   .player-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .player-meta{font-size:11px}
 
-  /* Tap hint */
-  tbody tr{position:relative}
-  tbody tr::after{content:'›';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;opacity:.5}
+  /* Tap hint — removed (NFL grade column serves as right anchor) */
+  tbody tr::after{content:none}
 
   /* Detail panel — full screen */
   .detail-panel.open{width:100%!important;position:fixed;top:0;left:0;z-index:100;height:100vh}
