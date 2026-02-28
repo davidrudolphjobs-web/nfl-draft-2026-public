@@ -64,8 +64,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .player-name{font-weight:600;font-size:14px}
 .nfl-grade-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:#00d4aa;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.3);border-radius:4px;padding:1px 5px;letter-spacing:0.02em;margin-top:3px;white-space:nowrap}
 .grade-info-btn{color:#00d4aa;opacity:0.6;text-decoration:none;font-size:10px;font-weight:400;line-height:1;cursor:pointer;transition:.15s}.grade-info-btn:hover{opacity:1}
-.col-nfl{text-align:center;width:80px}
-@media(max-width:600px){.col-nfl{display:none}}
+.col-nfl{text-align:center;width:72px}
 .grade-key-section{margin:2rem auto;max-width:900px;padding:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:12px}
 .grade-key-section h4{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
 .grade-key-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem .5rem}
@@ -218,10 +217,11 @@ body.board-wide .col-dj{display:table-cell}
   thead th{padding:8px 10px;font-size:10px}
   td{padding:10px 10px;font-size:13px;vertical-align:middle}
 
-  /* Hide extra columns on mobile — show only rank + player + NFL + HT/WT */
+  /* Hide extra columns on mobile — show only rank + player + NFL grade */
   .col-htwt{display:none}
   .col-dj{display:none!important}
   .col-combine{display:none!important}
+  .col-nfl{width:60px;font-size:12px}
 
   /* Player card layout */
   .rank-cell{font-size:14px;width:36px;padding:10px 6px}
