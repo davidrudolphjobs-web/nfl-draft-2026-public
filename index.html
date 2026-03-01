@@ -81,7 +81,7 @@ td{padding:10px 12px;font-size:13px;vertical-align:middle}
 .col-dj{display:none;color:var(--muted);font-size:13px;line-height:1.6;padding:10px 14px;vertical-align:middle}
 body.board-wide .col-dj{display:table-cell}
 .col-combine{text-align:center;vertical-align:middle;padding:4px 10px;white-space:nowrap}
-.combine-dot{font-size:13px;cursor:default}
+.combine-dot{font-size:10px;cursor:default;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:rgba(52,199,89,.12);border:1.5px solid rgba(52,199,89,.35);border-radius:3px;color:#34c759;font-weight:900;font-family:system-ui}
 .combine-fresh{display:inline-block;background:rgba(52,199,89,.18);color:#34c759;border:1px solid rgba(52,199,89,.35);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.3px}
 .combine-grid{display:flex;flex-wrap:wrap;gap:12px 20px;margin:10px 0}
 .combine-item{display:flex;flex-direction:column;min-width:60px}
@@ -256,7 +256,7 @@ body.board-wide .col-dj{display:table-cell}
       <div class="header-sub">Rankings sourced from <a href="https://www.tankathon.com/nfl/big_board" target="_blank" style="color:var(--muted);text-decoration:underline;text-underline-offset:2px">Tankathon Big Board</a></div>
     </div>
   </div>
-  <div class="combine-badge">NFL Combine: Feb 26 – Mar 2, 2026 — 🟢 Live results updating</div>
+  <div class="combine-badge">NFL Combine: Feb 26 – Mar 2, 2026 — ✓ Live results updating</div>
 </div>
 
 <div class="controls">
@@ -413,7 +413,7 @@ function combineHtml(name){
   if(c.bench)tests.push({v:c.bench+'',l:'Bench Reps'});
   const measGrid='<div class="combine-grid">'+meas.map(function(i){return'<div class="combine-item"><div class="combine-val">'+i.v+'</div><div class="combine-lbl">'+i.l+'</div></div>'}).join('')+'</div>';
   const testBlock=c.dnp?'<div class="combine-dnp">'+c.dnpNote+'</div>':(tests.length?'<div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:14px 0 6px">On-Field Testing</div><div class="combine-grid">'+tests.map(function(i){return'<div class="combine-item"><div class="combine-val">'+i.v+'</div><div class="combine-lbl">'+i.l+'</div></div>'}).join('')+'</div>':'<div class="combine-dnp">On-field workout not yet scheduled</div>');
-  return'<div class="detail-section"><h3>🟢 Combine Measurables</h3>'+measGrid+testBlock+'</div>';
+  return'<div class="detail-section"><h3>✓ Combine Measurables</h3>'+measGrid+testBlock+'</div>';
 }
 function djTakeHtml(name){const pr=profiles[name];if(!pr||!pr.djNote)return'';return'<div class="detail-section"><h3>🎙️ Daniel Jeremiah\'s Take <span style="font-size:11px;font-weight:400;color:var(--muted)">DJ\'s Top 50 #'+pr.djRank+'</span></h3><p style="font-size:var(--detail-font,14px);line-height:1.75;color:var(--text)">'+pr.djNote+'</p><div style="font-size:11px;color:var(--muted);text-align:right;border-top:1px solid var(--border);padding-top:8px;margin-top:8px">Sourced from <a href="https://www.nfl.com/news/daniel-jeremiah-s-top-50-2026-nfl-draft-prospect-rankings-2-0" target="_blank" style="color:var(--muted);text-decoration:underline">Daniel Jeremiah\'s Top 50 (NFL.com)</a></div></div>';}
 function headshot(p){const pr=profiles[p.name];const nflUrl=pr&&pr.nflUrl?pr.nflUrl:null;if(!nflUrl)return detailLogoFallback(p.school);const pid=nflUrl.split('/').pop();const url1='https://static.www.nfl.com/image/private/f_auto,q_85/league/god-prospect-headshots/2023/'+pid;return '<img src="'+url1+'" class="detail-logo-hs" data-pid="'+pid+'" data-school="'+p.school+'" alt="'+p.name+' headshot" onerror="hsError(this)">';}
@@ -495,7 +495,7 @@ function renderBoard(){
     html+=`<td style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:${isActive?'#fff':'#555'};width:48px;text-align:center;padding:14px 12px">${p.rank}</td>`;
     html+=`<td><div class="player-info">${logoHtml(p.school)}<div class="player-details"><div class="player-name">${p.name}</div><div class="player-meta"><span class="pos-badge pos-${p.pos}">${p.pos}</span>${p.school} • ${p.conf}</div></div></div></td>`;
     html+=`<td class="col-dj">${pr&&pr.djNote?pr.djNote:''}</td>`;
-    html+=`<td class="col-combine">${combineData[p.name]?'<span class="combine-dot" title="Combine data available">🟢</span>':''}</td>`;
+    html+=`<td class="col-combine">${combineData[p.name]?'<span class="combine-dot" title="Combine data available">✓</span>':''}</td>`;
     html+=`<td class="col-nfl measurables">${pr&&pr.nflGrade?`<span class="nfl-grade-badge" style="color:${gradeColor(pr.nflGrade)};border-color:${gradeColor(pr.nflGrade)}">${pr.nflGrade.toFixed(2)}</span>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>`;
     const _c=combineData[p.name];html+=`<td class="measurables col-htwt">${(_c?_c.ht:p.height)} / ${(_c?_c.wt:p.weight)} lbs</td>`;
     
